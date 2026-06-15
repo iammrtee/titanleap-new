@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+.env*
+.vercel
+
+# Secret — contains API tokens, never commit
+deploy.ps1
+DEPLOY.bat
