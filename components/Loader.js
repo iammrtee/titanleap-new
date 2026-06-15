@@ -31,6 +31,8 @@ export default function Loader() {
     if (done) return
     setDone(true)
     document.body.style.overflow = ''
+    // Trigger staggered entrance animations
+    document.body.classList.add('site-ready')
   }
 
   return (
