@@ -1,23 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-  <!-- Purple circle background -->
-  <circle cx="200" cy="200" r="200" fill="#4B1FCC"/>
+  <!-- Purple circle -->
+  <circle cx="200" cy="200" r="200" fill="#4520CC"/>
 
-  <!-- White T lettermark -->
-  <!-- Left rounded shape (like a flipped D / bracket) -->
+  <!-- Left white shape: square with concave quarter-circle cut from bottom-right -->
   <path d="
-    M 110 145
-    L 200 145
-    Q 255 145 255 200
-    Q 255 255 200 255
-    L 155 255
-    L 155 295
-    L 110 295
+    M 90 118
+    H 202
+    V 202
+    A 82 82 0 0 0 118 280
+    H 90
     Z
   " fill="white"/>
 
-  <!-- Right vertical bar -->
-  <rect x="265" y="145" width="55" height="150" rx="8" fill="white"/>
+  <!-- Right white bar -->
+  <rect x="218" y="118" width="52" height="162" rx="7" fill="white"/>
 
-  <!-- Gold dot -->
-  <circle cx="295" cy="155" r="32" fill="#F5C518"/>
+  <!-- Gold dot (overlaps top-right of right bar) -->
+  <circle cx="285" cy="148" r="40" fill="#F5C518"/>
 </svg>
