@@ -1,5 +1,6 @@
 import './globals.css'
 import { ThemeProvider } from '../components/ThemeContext'
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
   title: 'TitanLeap — Done-For-You Growth Systems',
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )

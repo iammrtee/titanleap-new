@@ -7,6 +7,7 @@ const revVals = ['Pre-revenue — not making money yet','Under $1k/month','$1k�
 export default function AuditModal({ open, onClose }) {
   const [step, setStep] = useState(1)
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
   const [answers, setAnswers] = useState({ a1:'', a2:'', a3:'', a4:'', a5:'', name:'', email:'', url:'', goal:'' })
   const [err, setErr] = useState('')
 
@@ -30,19 +31,22 @@ export default function AuditModal({ open, onClose }) {
   const next = () => { if (validate()) setStep(s => Math.min(s + 1, 7)) }
   const back = () => { setErr(''); setStep(s => Math.max(s - 1, 1)) }
 
-  const submit = () => {
-    const body = [
-      `Product: ${answers.a1}`,
-      `Revenue: ${answers.a2}`,
-      `Funnel: ${answers.a3}`,
-      `Biggest leak: ${answers.a4}`,
-      `Tried: ${answers.a5}`,
-      `Name: ${answers.name}`,
-      `URL: ${answers.url}`,
-      `Goal: ${answers.goal}`,
-    ].join('\n\n')
-    window.location.href = `mailto:hello@titanleap.co?subject=Revenue Leak Audit — ${answers.name}&body=${encodeURIComponent(body)}`
-    setSubmitted(true)
+  const submit = async () => {
+    setSending(true)
+    setErr('')
+    try {
+      const res = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(answers),
+      })
+      if (!res.ok) throw new Error('failed')
+      setSubmitted(true)
+    } catch {
+      setErr('Something went wrong. Please email us directly at hello@titanleap.co')
+    } finally {
+      setSending(false)
+    }
   }
 
   if (!open) return null
@@ -183,7 +187,9 @@ export default function AuditModal({ open, onClose }) {
                         </div>
                       ))}
                     </div>
-                    <button className="am-btn-submit" onClick={submit}>Submit — Start My Audit →</button>
+                    <button className="am-btn-submit" onClick={submit} disabled={sending}>
+                      {sending ? 'Sending…' : 'Submit — Start My Audit →'}
+                    </button>
                     <div className="am-fine">One-time $297 · Delivered in 5 hours · Full refund if not useful</div>
                     <div style={{marginTop:'10px'}}><button className="am-btn-back" onClick={back}>← Edit answers</button></div>
                   </div>
