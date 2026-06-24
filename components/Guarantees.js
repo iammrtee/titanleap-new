@@ -22,12 +22,14 @@ export default function Guarantees() {
           </div>
           <div className="g-items">
             {items.map((item, i) => (
-              <div key={i} className={`g-item reveal d${i+1}${open === i ? ' open' : ''}`}>
-                <div className="g-q" onClick={() => toggle(i)}>
-                  <span>{item.q}</span>
-                  <span className="g-ico">{open === i ? '−' : '+'}</span>
+              <div key={i} className={`reveal d${i+1}`}>
+                <div className={`g-item${open === i ? ' open' : ''}`}>
+                  <div className="g-q" onClick={() => toggle(i)}>
+                    <span>{item.q}</span>
+                    <span className="g-ico">{open === i ? '−' : '+'}</span>
+                  </div>
+                  <div className="g-a">{item.a}</div>
                 </div>
-                <div className="g-a">{item.a}</div>
               </div>
             ))}
           </div>
