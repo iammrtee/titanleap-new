@@ -73,19 +73,22 @@ export async function POST(request) {
       }
     }
 
-    // — Content —
-    const hasBlog = /\/blog|\/articles|\/resources|\/insights/i.test(html)
+    // — Content — check homepage for blog/content links broadly
+    const hasBlog = /\/blog|\/articles|\/resources|\/insights|\/content|\/news|\/posts?|\/guides?|\/learn|\/academy|\/podcast/i.test(html)
+    const hasYouTube = /youtube\.com(?:\/embed|\/channel|\/user|\/@)/i.test(html)
     const hasVideo = /<video/i.test(html) || /\.mp4/i.test(html) || /youtube\.com\/embed|vimeo\.com/i.test(html)
     const hasFreeOffer = /\bfree\b.{0,30}(trial|plan|demo|audit|forever)/i.test(bodyText)
+    // Only flag missing content if there's genuinely nothing — no blog link, no YouTube, no video
+    const hasAnyContent = hasBlog || hasYouTube || hasVideo
 
-    // — Leaks —
+    // — Leaks — only report what we can actually confirm from the HTML
     const leaks = []
-    if (!prices.length) leaks.push("No pricing visible — buyers can't self-qualify so they bounce instead of booking.")
-    if (!pixels.length) leaks.push("No tracking pixel detected — can't retarget or measure what's working. Every ad dollar flies blind.")
-    if (!hasBlog) leaks.push("No content engine found — zero organic SEO, 100% reliant on paid or outbound for traffic.")
-    if (deadCtas > 0) leaks.push(`${deadCtas} CTA button${deadCtas > 1 ? 's' : ''} link to a dead anchor (#) — the site looks ready to sell but doesn't actually convert.`)
+    if (!prices.length) leaks.push("No pricing visible on the page — visitors can't self-qualify, which increases bounce rate and wastes sales calls.")
+    if (!pixels.length) leaks.push("No tracking pixel detected — you can't retarget visitors or measure what's actually converting. Every ad dollar flies blind.")
+    if (!hasAnyContent) leaks.push("No blog, content hub, or video found linked from the homepage — organic traffic and trust-building are being left on the table.")
+    if (deadCtas > 0) leaks.push(`${deadCtas} CTA button${deadCtas > 1 ? 's' : ''} link to a placeholder (#) — the page looks ready to sell but doesn't actually convert.`)
     const uniqueDead = [...new Set(deadSocials)]
-    if (uniqueDead.length) leaks.push(`${uniqueDead.join(', ')} social link${uniqueDead.length > 1 ? 's' : ''} go to a placeholder (#) — visitors who want to vet you hit a dead end.`)
+    if (uniqueDead.length) leaks.push(`${uniqueDead.join(', ')} social link${uniqueDead.length > 1 ? 's' : ''} point to a placeholder (#) — visitors who want to verify you hit a dead end.`)
 
     // — Auto-fill suggestions —
     const a1Suggestion = [company, desc || h1].filter(Boolean).join(' — ').slice(0, 280)

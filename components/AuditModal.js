@@ -102,6 +102,9 @@ export default function AuditModal({ open, onClose }) {
   const scrollTop = () => { mainRef.current && (mainRef.current.scrollTop = 0) }
   const goTo = p => { setPhase(p); scrollTop() }
 
+  const [scanUrl, setScanUrl]     = useState('')
+  const [scanError, setScanError] = useState('')
+
   const phases = () => {
     const base = ['business','challenges','positioning','authority','leadgen','sales']
     if (data.website?.trim()) base.push('website')
@@ -118,7 +121,7 @@ export default function AuditModal({ open, onClose }) {
     const order = phases()
     const idx = order.indexOf(phase)
     if (idx > 0) goTo(order[idx - 1])
-    else goTo('welcome')
+    else goTo('scan')
   }
 
   // Auto-scan URL as user types (debounced 800ms)
@@ -133,20 +136,24 @@ export default function AuditModal({ open, onClose }) {
   const scanWebsite = async url => {
     if (!url?.trim()) return
     const normalized = url.startsWith('http') ? url : `https://${url}`
-    setScanning(true)
+    setScanning(true); setScanError('')
     try {
       const res = await fetch('/api/enrich', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ url: normalized }),
       })
       const d = await res.json()
-      if (!d.error) {
-        setScanResult(d)
-        // Auto-fill business name if empty
-        if (d.company) setData(prev => ({ ...prev, businessName: prev.businessName || d.company }))
-      }
-    } catch {}
+      if (d.error) { setScanError(d.error); return }
+      setScanResult(d)
+      if (d.company) setData(prev => ({ ...prev, businessName: prev.businessName || d.company, website: url }))
+    } catch { setScanError("Couldn't reach that URL. You can still fill in the form manually.") }
     finally { setScanning(false) }
+  }
+
+  const runScan = () => {
+    if (!scanUrl.trim()) { setScanError('Enter your website URL first.'); return }
+    set('website', scanUrl)
+    scanWebsite(scanUrl)
   }
 
   const handleSubmit = async () => {
@@ -262,7 +269,74 @@ export default function AuditModal({ open, onClose }) {
                 <span>📊 10 dimensions analyzed</span>
                 <span>🎯 Delivered within 5 hours</span>
               </div>
-              <button className="diag-start-btn" onClick={() => goTo('business')}>Start Application →</button>
+              <button className="diag-start-btn" onClick={() => goTo('scan')}>Start Application →</button>
+            </div>
+          )}
+
+          {/* SCAN */}
+          {phase === 'scan' && (
+            <div className="diag-scan-phase">
+              <div className="diag-eyebrow">Step 1 of 2</div>
+              <h3 className="diag-screen-h">Enter your website — we&apos;ll scan it instantly.</h3>
+              <p className="diag-screen-sub" style={{marginBottom:'24px'}}>We detect tracking gaps, dead CTAs, missing trust signals, and conversion leaks before you fill anything in.</p>
+
+              <div className={`diag-url-box${scanning?' scanning':''}`}>
+                <span className="diag-url-icon">↗</span>
+                <input
+                  className="diag-url-input"
+                  type="text"
+                  value={scanUrl}
+                  onChange={e => { setScanUrl(e.target.value); setScanError('') }}
+                  onKeyDown={e => e.key === 'Enter' && !scanning && runScan()}
+                  placeholder="yourwebsite.com"
+                  autoFocus
+                />
+                <button className="diag-scan-btn" onClick={runScan} disabled={scanning}>
+                  {scanning ? <span className="diag-spin"/> : 'Scan →'}
+                </button>
+              </div>
+              {scanError && <div className="diag-scan-error">{scanError}</div>}
+
+              {scanResult && !scanning && (
+                <div className="diag-scan-result">
+                  <div className="diag-scan-company">
+                    <span className="diag-scan-check">✓</span>
+                    <strong>{scanResult.company}</strong>
+                    <span className="diag-scan-domain">{scanResult.domain}</span>
+                  </div>
+
+                  {scanResult.pixels?.length > 0 && (
+                    <div className="diag-scan-chips">
+                      {scanResult.pixels.map(p => <span key={p} className="diag-scan-chip green">{p} ✓</span>)}
+                      {scanResult.hasBlog && <span className="diag-scan-chip purple">Content ✓</span>}
+                    </div>
+                  )}
+
+                  {scanResult.leaks?.length > 0 && (
+                    <div className="diag-scan-leaks">
+                      <div className="diag-leaks-title">Revenue leaks found:</div>
+                      {scanResult.leaks.map((l, i) => (
+                        <div key={i} className="diag-leak-row">
+                          <span className="diag-leak-dot"/>
+                          <span>{l}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <button className="diag-generate" style={{marginTop:'20px', width:'100%'}} onClick={() => goTo('business')}>
+                    {scanResult.leaks?.length > 0
+                      ? `Start Audit — ${scanResult.leaks.length} Leak${scanResult.leaks.length !== 1 ? 's' : ''} to Fix →`
+                      : 'Continue to Full Application →'}
+                  </button>
+                </div>
+              )}
+
+              {!scanResult && !scanning && (
+                <button className="diag-skip" onClick={() => goTo('business')}>
+                  Skip — fill in manually →
+                </button>
+              )}
             </div>
           )}
 
