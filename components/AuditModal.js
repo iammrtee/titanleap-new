@@ -1,49 +1,133 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-const revOpts = ['Pre-revenue','Under $1k/mo','$1k–$5k/mo','$5k–$15k/mo','$15k–$50k/mo','Over $50k/mo']
-const revVals = ['Pre-revenue — not making money yet','Under $1k/month','$1k–$5k/month','$5k–$15k/month','$15k–$50k/month','Over $50k/month']
+const STEPS = [
+  {
+    key: 'a1', label: 'Your product', type: 'textarea',
+    q: 'What does your product do and who is it for?',
+    hint: 'Be specific. "B2B SaaS for marketing agencies that automates client reporting" beats "a marketing tool."',
+    placeholder: 'e.g. We build project management software for remote design teams with 5–50 people...',
+  },
+  {
+    key: 'a2', label: 'Revenue stage', type: 'radio',
+    q: 'Where are you right now with revenue?',
+    hint: "Be honest — this helps us calibrate the audit to your stage.",
+  },
+  {
+    key: 'a3', label: 'Your funnel', type: 'textarea',
+    q: 'How does someone go from stranger to paying customer?',
+    hint: 'Walk us through each step. Where do they find you, what do they do next, where do they drop off?',
+    placeholder: 'e.g. Google ads → homepage → free trial signup → email sequence → 12% convert to paid...',
+  },
+  {
+    key: 'a4', label: 'Biggest leak', type: 'textarea',
+    q: 'Where do you think the biggest leak is?',
+    hint: "Your gut instinct — even if you're not sure. What feels most broken right now?",
+    placeholder: 'e.g. People sign up for free trial but only 8% upgrade. The drop happens around day 4...',
+  },
+  {
+    key: 'a5', label: "What you've tried", type: 'textarea',
+    q: "What have you already tried to fix it?",
+    hint: 'Anything — ads, content, email sequences, pricing changes, landing page rewrites.',
+    placeholder: 'e.g. Rewrote onboarding emails twice, reduced price by 30%, ran Facebook ads for 3 months...',
+  },
+  {
+    key: 'contact', label: 'Contact + goal', type: 'contact',
+    q: "Last one — who are you and what does success look like?",
+    hint: "We'll send your audit here. Tell us what a win looks like in 90 days.",
+  },
+]
+
+const REV_OPTS = [
+  { label: 'Pre-revenue', val: 'Pre-revenue — not making money yet' },
+  { label: 'Under $1k/mo', val: 'Under $1k/month' },
+  { label: '$1k–$5k/mo', val: '$1k–$5k/month' },
+  { label: '$5k–$15k/mo', val: '$5k–$15k/month' },
+  { label: '$15k–$50k/mo', val: '$15k–$50k/month' },
+  { label: 'Over $50k/mo', val: 'Over $50k/month' },
+]
 
 export default function AuditModal({ open, onClose }) {
+  const [phase, setPhase] = useState('scan') // scan | form | review | success
   const [step, setStep] = useState(1)
-  const [submitted, setSubmitted] = useState(false)
+  const [scanUrl, setScanUrl] = useState('')
+  const [scanning, setScanning] = useState(false)
+  const [scanResult, setScanResult] = useState(null)
+  const [scanError, setScanError] = useState('')
   const [sending, setSending] = useState(false)
-  const [answers, setAnswers] = useState({ a1:'', a2:'', a3:'', a4:'', a5:'', name:'', email:'', url:'', goal:'' })
+  const [answers, setAnswers] = useState({ a1: '', a2: '', a3: '', a4: '', a5: '', name: '', email: '', url: '', goal: '' })
+  const [autofilled, setAutofilled] = useState({})
   const [err, setErr] = useState('')
+  const urlInputRef = useRef(null)
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
-    if (!open) { setStep(1); setSubmitted(false); setErr('') }
+    if (!open) {
+      setPhase('scan'); setStep(1); setScanResult(null)
+      setScanUrl(''); setScanError(''); setErr(''); setSending(false)
+      setAnswers({ a1: '', a2: '', a3: '', a4: '', a5: '', name: '', email: '', url: '', goal: '' })
+      setAutofilled({})
+    } else {
+      setTimeout(() => urlInputRef.current?.focus(), 400)
+    }
   }, [open])
 
-  const set = (key, val) => setAnswers(a => ({ ...a, [key]: val }))
+  const set = (k, v) => setAnswers(a => ({ ...a, [k]: v }))
+
+  const scan = async () => {
+    if (!scanUrl.trim()) { setScanError('Enter a URL first'); return }
+    setScanning(true); setScanError(''); setScanResult(null)
+    try {
+      const res = await fetch('/api/enrich', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: scanUrl }),
+      })
+      const data = await res.json()
+      if (data.error) { setScanError(data.error); return }
+      setScanResult(data)
+      const newAuto = {}
+      setAnswers(prev => {
+        const next = { ...prev, url: scanUrl }
+        if (data.prefill?.a1) { next.a1 = data.prefill.a1; newAuto.a1 = true }
+        if (data.prefill?.a3) { next.a3 = data.prefill.a3; newAuto.a3 = true }
+        return next
+      })
+      setAutofilled(newAuto)
+    } catch {
+      setScanError("Couldn't reach that URL. Fill in the form manually.")
+    } finally {
+      setScanning(false)
+    }
+  }
 
   const validate = () => {
-    if (step === 1 && !answers.a1.trim()) { setErr('Please tell us about your product.'); return false }
-    if (step === 2 && !answers.a2) { setErr('Please select your revenue stage.'); return false }
-    if (step === 3 && !answers.a3.trim()) { setErr('Please describe your funnel.'); return false }
-    if (step === 4 && !answers.a4.trim()) { setErr('Please share your instinct.'); return false }
-    if (step === 5 && !answers.a5.trim()) { setErr("Please tell us what you've tried."); return false }
-    if (step === 6 && (!answers.name.trim() || !answers.email.trim() || !answers.goal.trim())) { setErr('Please fill in name, email, and success goal.'); return false }
+    const s = STEPS[step - 1]
+    if (s.type === 'textarea' && !answers[s.key]?.trim()) { setErr('Please answer this question.'); return false }
+    if (s.type === 'radio' && !answers.a2) { setErr('Please select your revenue stage.'); return false }
+    if (s.type === 'contact') {
+      if (!answers.name.trim()) { setErr('Please enter your name.'); return false }
+      if (!answers.email.trim() || !answers.email.includes('@')) { setErr('Please enter a valid email.'); return false }
+      if (!answers.goal.trim()) { setErr('Please describe your 90-day success goal.'); return false }
+    }
     setErr(''); return true
   }
 
-  const next = () => { if (validate()) setStep(s => Math.min(s + 1, 7)) }
-  const back = () => { setErr(''); setStep(s => Math.max(s - 1, 1)) }
+  const next = () => { if (validate()) step < 6 ? setStep(s => s + 1) : setPhase('review') }
+  const back = () => { setErr(''); step > 1 ? setStep(s => s - 1) : setPhase('scan') }
 
   const submit = async () => {
-    setSending(true)
-    setErr('')
+    setSending(true); setErr('')
     try {
       const res = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(answers),
+        body: JSON.stringify({ ...answers, leaks: scanResult?.leaks, scanData: scanResult }),
       })
-      if (!res.ok) throw new Error('failed')
-      setSubmitted(true)
+      if (!res.ok) throw new Error()
+      setPhase('success')
     } catch {
-      setErr('Something went wrong. Please email us directly at hello@titanleap.co')
+      setErr('Something went wrong. Email us at hello@titanleap.co')
     } finally {
       setSending(false)
     }
@@ -51,152 +135,240 @@ export default function AuditModal({ open, onClose }) {
 
   if (!open) return null
 
-  const progress = Math.min(step, 6)
+  const cur = STEPS[step - 1]
 
   return (
     <div className="audit-overlay open" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="audit-modal">
-        <div className="audit-modal-header">
-          <span className="audit-modal-title">Revenue Leak Audit — Intake Form</span>
-          <div className="audit-modal-close" onClick={onClose}>✕</div>
-        </div>
-        <div className="am-wrap">
-          <div className="am-header">
-            <div className="am-tag"><span className="am-tag-dot"/><span>Revenue Leak Audit</span></div>
-            <h2>Tell us about your<br />business. We&apos;ll find<br />the <em>leaks.</em></h2>
-            <p className="am-sub">Takes <strong>5 minutes.</strong> The more specific you are, the more specific your diagnosis. Audit delivered within 5 hours.</p>
-            {!submitted && (
-              <div className="am-progress">
-                <span className="am-pb-label">Question {Math.min(step,6)} of 6</span>
-                <div className="am-pb-steps">
-                  {[1,2,3,4,5,6].map(i => (
-                    <div key={i} className={`am-pb-step${i < progress ? ' done' : i === progress ? ' active' : ''}`}/>
-                  ))}
-                </div>
-              </div>
-            )}
+      <div className="am2-modal">
+
+        {/* ── Close ── */}
+        <button className="am2-close" onClick={onClose} aria-label="Close">✕</button>
+
+        {/* ── Sidebar ── */}
+        <div className="am2-sidebar">
+          <div className="am2-brand">
+            <div className="am2-brand-mark">TL</div>
+            <div>
+              <div className="am2-brand-name">TitanLeap</div>
+              <div className="am2-brand-sub">Revenue Leak Audit</div>
+            </div>
           </div>
 
-          <div className="am-card">
-            {submitted ? (
-              <div className="am-success">
-                <div className="am-success-icon">✓</div>
-                <h3>Audit request received.</h3>
-                <p>We'll send your Revenue Leak Report to your email <strong>within 5 hours.</strong> Check your inbox — and spam just in case.</p>
-                <p style={{marginTop:'14px',fontSize:'13px',color:'rgba(196,168,255,.55)'}}>Questions? <strong style={{color:'#F5C518'}}>hello@titanleap.co</strong></p>
+          {(phase === 'form' || phase === 'review') ? (
+            <nav className="am2-steps">
+              {STEPS.map((s, i) => {
+                const isDone = step > i + 1 || phase === 'review'
+                const isActive = step === i + 1 && phase === 'form'
+                return (
+                  <div key={i} className={`am2-step${isDone ? ' done' : isActive ? ' active' : ''}`}>
+                    <div className="am2-step-dot">{isDone ? '✓' : i + 1}</div>
+                    <div className="am2-step-label">{s.label}</div>
+                  </div>
+                )
+              })}
+            </nav>
+          ) : (
+            <div className="am2-scan-tagline">
+              We find<br />the leaks.<br /><em>You close<br />the deals.</em>
+            </div>
+          )}
+
+          <div className="am2-sidebar-footer">
+            {scanResult?.leaks?.length > 0 && (
+              <div className="am2-leaks-badge">
+                <span className="am2-leaks-count">{scanResult.leaks.length}</span>
+                <span>leak{scanResult.leaks.length !== 1 ? 's' : ''} detected</span>
               </div>
-            ) : (
-              <>
-                {/* Q1 */}
-                {step === 1 && (
-                  <div className="am-q active">
-                    <div className="am-q-num">Question 1 of 6</div>
-                    <div className="am-q-label">What does your product do and who is it for?</div>
-                    <div className="am-q-hint">Be specific. "B2B SaaS for marketing agencies that automates client reporting" is better than "a marketing tool."</div>
-                    <textarea value={answers.a1} onChange={e => set('a1', e.target.value)} placeholder="e.g. We build project management software for remote design teams..."/>
-                    {err && <div className="am-err">{err}</div>}
-                    <div className="am-nav"><div/><button className="am-btn-next" onClick={next}>Next →</button></div>
-                  </div>
-                )}
+            )}
+            <div className="am2-delivery">⚡ Audit delivered in 5 hours</div>
+          </div>
+        </div>
 
-                {/* Q2 */}
-                {step === 2 && (
-                  <div className="am-q active">
-                    <div className="am-q-num">Question 2 of 6</div>
-                    <div className="am-q-label">Where are you right now with revenue?</div>
-                    <div className="am-q-hint">Be honest — this helps us calibrate the audit to your stage.</div>
-                    <div className="am-rev-opts">
-                      {revOpts.map((opt, i) => (
-                        <div key={i} className={`am-rev-opt${answers.a2 === revVals[i] ? ' selected' : ''}`} onClick={() => set('a2', revVals[i])}>{opt}</div>
-                      ))}
+        {/* ── Main content ── */}
+        <div className="am2-main">
+
+          {/* SCAN PHASE */}
+          {phase === 'scan' && (
+            <div className="am2-phase">
+              <div className="am2-phase-tag">Step 0 — Website Intel</div>
+              <h2 className="am2-phase-head">Drop your URL.<br />We'll pre-fill the audit.</h2>
+              <p className="am2-phase-sub">
+                We scan your site in seconds — detecting your funnel, pricing, pixels, and revenue leaks — then auto-fill your form with real intel.
+              </p>
+
+              <div className={`am2-url-box${scanning ? ' am2-scanning' : ''}`}>
+                <span className="am2-url-icon">↗</span>
+                <input
+                  ref={urlInputRef}
+                  type="url"
+                  className="am2-url-input"
+                  value={scanUrl}
+                  onChange={e => { setScanUrl(e.target.value); setScanError('') }}
+                  onKeyDown={e => e.key === 'Enter' && !scanning && scan()}
+                  placeholder="https://yourwebsite.com"
+                  disabled={scanning}
+                />
+                <button className="am2-scan-btn" onClick={scan} disabled={scanning}>
+                  {scanning ? <span className="am2-spin" /> : 'Scan →'}
+                </button>
+              </div>
+              {scanError && <div className="am2-scan-error">{scanError}</div>}
+
+              {/* Scan result */}
+              {scanResult && !scanning && (
+                <div className="am2-scan-result">
+                  <div className="am2-scan-company">
+                    <span className="am2-scan-check">✓</span>
+                    <strong>{scanResult.company}</strong>
+                    <span className="am2-scan-domain">{scanResult.domain}</span>
+                  </div>
+
+                  {scanResult.pixels?.length > 0 && (
+                    <div className="am2-scan-chips">
+                      {scanResult.pixels.map(p => <span key={p} className="am2-chip am2-chip-green">{p}</span>)}
+                      {scanResult.hasBlog && <span className="am2-chip am2-chip-purple">Blog ✓</span>}
+                      {scanResult.hasFreeOffer && <span className="am2-chip am2-chip-purple">Free offer ✓</span>}
                     </div>
-                    {err && <div className="am-err">{err}</div>}
-                    <div className="am-nav"><button className="am-btn-back" onClick={back}>← Back</button><button className="am-btn-next" onClick={next}>Next →</button></div>
-                  </div>
-                )}
+                  )}
 
-                {/* Q3 */}
-                {step === 3 && (
-                  <div className="am-q active">
-                    <div className="am-q-num">Question 3 of 6</div>
-                    <div className="am-q-label">How does someone go from stranger to paying customer?</div>
-                    <div className="am-q-hint">Walk us through the steps. Where do they find you, what do they do next, where do they drop off?</div>
-                    <textarea value={answers.a3} onChange={e => set('a3', e.target.value)} placeholder="e.g. They find us through Google ads → land on homepage → free trial → emails → 12% convert..."/>
-                    {err && <div className="am-err">{err}</div>}
-                    <div className="am-nav"><button className="am-btn-back" onClick={back}>← Back</button><button className="am-btn-next" onClick={next}>Next →</button></div>
-                  </div>
-                )}
-
-                {/* Q4 */}
-                {step === 4 && (
-                  <div className="am-q active">
-                    <div className="am-q-num">Question 4 of 6</div>
-                    <div className="am-q-label">Where do you think the biggest leak is?</div>
-                    <div className="am-q-hint">Your gut instinct. Even if you're not sure — what feels most broken right now?</div>
-                    <textarea value={answers.a4} onChange={e => set('a4', e.target.value)} placeholder="e.g. I think people are dropping off between free trial and paid conversion..."/>
-                    {err && <div className="am-err">{err}</div>}
-                    <div className="am-nav"><button className="am-btn-back" onClick={back}>← Back</button><button className="am-btn-next" onClick={next}>Next →</button></div>
-                  </div>
-                )}
-
-                {/* Q5 */}
-                {step === 5 && (
-                  <div className="am-q active">
-                    <div className="am-q-num">Question 5 of 6</div>
-                    <div className="am-q-label">What have you already tried to fix it?</div>
-                    <div className="am-q-hint">Anything — ads, content, email sequences, pricing changes, landing page rewrites.</div>
-                    <textarea value={answers.a5} onChange={e => set('a5', e.target.value)} placeholder="e.g. Rewrote onboarding emails twice, tried reducing price, ran Facebook ads for 3 months..."/>
-                    {err && <div className="am-err">{err}</div>}
-                    <div className="am-nav"><button className="am-btn-back" onClick={back}>← Back</button><button className="am-btn-next" onClick={next}>Next →</button></div>
-                  </div>
-                )}
-
-                {/* Q6 */}
-                {step === 6 && (
-                  <div className="am-q active">
-                    <div className="am-q-num">Question 6 of 6</div>
-                    <div className="am-q-label">Last one — your contact details and success goal.</div>
-                    <div className="am-q-hint">We'll send your audit here. Tell us what success looks like in 90 days.</div>
-                    <input type="text" value={answers.name} onChange={e => set('name', e.target.value)} placeholder="Your name" style={{marginBottom:'8px'}}/>
-                    <input type="email" value={answers.email} onChange={e => set('email', e.target.value)} placeholder="Your email address" style={{marginBottom:'8px'}}/>
-                    <input type="url" value={answers.url} onChange={e => set('url', e.target.value)} placeholder="Your website URL (optional)" style={{marginBottom:'8px'}}/>
-                    <textarea value={answers.goal} onChange={e => set('goal', e.target.value)} placeholder="What does success look like in 90 days?" style={{minHeight:'90px'}}/>
-                    {err && <div className="am-err">{err}</div>}
-                    <div className="am-nav"><button className="am-btn-back" onClick={back}>← Back</button><button className="am-btn-next" onClick={next}>Review →</button></div>
-                  </div>
-                )}
-
-                {/* Review */}
-                {step === 7 && (
-                  <div className="am-submit">
-                    <div className="am-submit-title">Ready to submit?</div>
-                    <p className="am-submit-sub">Check it looks right then hit submit — audit delivered to your inbox within 5 hours.</p>
-                    <div className="am-review">
-                      {[
-                        ['Product', answers.a1],
-                        ['Revenue', answers.a2],
-                        ['Funnel', answers.a3],
-                        ['Biggest leak', answers.a4],
-                        ['What you tried', answers.a5],
-                        ['Contact', `${answers.name} · ${answers.email}`],
-                        ['Goal', answers.goal],
-                      ].map(([label, val]) => val && (
-                        <div key={label} style={{marginBottom:'10px',fontSize:'13px'}}>
-                          <strong style={{color:'var(--mgold)',display:'block',marginBottom:'2px'}}>{label}</strong>
-                          <span style={{color:'rgba(196,168,255,.8)'}}>{val}</span>
+                  {scanResult.leaks?.length > 0 && (
+                    <div className="am2-scan-leaks">
+                      <div className="am2-leaks-title">Revenue leaks found:</div>
+                      {scanResult.leaks.map((l, i) => (
+                        <div key={i} className="am2-scan-leak">
+                          <span className="am2-leak-dot" />
+                          {l}
                         </div>
                       ))}
                     </div>
-                    <button className="am-btn-submit" onClick={submit} disabled={sending}>
-                      {sending ? 'Sending…' : 'Submit — Start My Audit →'}
-                    </button>
-                    <div className="am-fine">One-time $297 · Delivered in 5 hours · Full refund if not useful</div>
-                    <div style={{marginTop:'10px'}}><button className="am-btn-back" onClick={back}>← Edit answers</button></div>
-                  </div>
+                  )}
+
+                  <button className="am2-cta-btn" onClick={() => setPhase('form')}>
+                    {scanResult.leaks?.length > 0
+                      ? `Start Audit — ${scanResult.leaks.length} Leak${scanResult.leaks.length !== 1 ? 's' : ''} to Fix →`
+                      : 'Continue to Full Audit →'}
+                  </button>
+                </div>
+              )}
+
+              {!scanResult && !scanning && (
+                <button className="am2-skip-btn" onClick={() => setPhase('form')}>
+                  Skip scan — fill in manually →
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* FORM PHASE */}
+          {phase === 'form' && (
+            <div className="am2-phase am2-form-phase">
+              <div className="am2-step-header">
+                <span className="am2-step-num">Question {step} <span className="am2-step-of">/ 6</span></span>
+                {autofilled[cur.key] && (
+                  <span className="am2-auto-badge">✦ Auto-filled from scan</span>
                 )}
-              </>
-            )}
-          </div>
+              </div>
+
+              <h3 className="am2-q-head">{cur.q}</h3>
+              <p className="am2-q-hint">{cur.hint}</p>
+
+              {cur.type === 'textarea' && (
+                <textarea
+                  className={`am2-textarea${autofilled[cur.key] ? ' am2-autofilled' : ''}`}
+                  value={answers[cur.key] || ''}
+                  onChange={e => {
+                    set(cur.key, e.target.value)
+                    if (autofilled[cur.key]) setAutofilled(a => ({ ...a, [cur.key]: false }))
+                  }}
+                  placeholder={cur.placeholder}
+                  autoFocus
+                />
+              )}
+
+              {cur.type === 'radio' && (
+                <div className="am2-radio-grid">
+                  {REV_OPTS.map((o, i) => (
+                    <div
+                      key={i}
+                      className={`am2-radio-opt${answers.a2 === o.val ? ' am2-selected' : ''}`}
+                      onClick={() => { set('a2', o.val); setErr('') }}
+                    >
+                      <span className="am2-radio-dot" />
+                      {o.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {cur.type === 'contact' && (
+                <div className="am2-contact-grid">
+                  <input type="text" className="am2-input" value={answers.name} onChange={e => set('name', e.target.value)} placeholder="Your full name" autoFocus />
+                  <input type="email" className="am2-input" value={answers.email} onChange={e => set('email', e.target.value)} placeholder="Email address" />
+                  <input type="url" className="am2-input am2-col-span" value={answers.url} onChange={e => set('url', e.target.value)} placeholder="Website URL (optional — already scanned if provided above)" />
+                  <textarea className="am2-textarea am2-col-span" style={{ minHeight: '80px' }} value={answers.goal} onChange={e => set('goal', e.target.value)} placeholder="What does success look like in 90 days? (revenue target, conversion rate, MRR goal...)" />
+                </div>
+              )}
+
+              {err && <div className="am2-err">{err}</div>}
+
+              <div className="am2-nav">
+                <button className="am2-back-btn" onClick={back}>← Back</button>
+                <button className="am2-next-btn" onClick={next}>
+                  {step === 6 ? 'Review Answers →' : 'Continue →'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* REVIEW PHASE */}
+          {phase === 'review' && (
+            <div className="am2-phase">
+              <div className="am2-phase-tag">Final step</div>
+              <h3 className="am2-q-head">Looks good?</h3>
+              <p className="am2-q-hint">Check your answers then submit. Your Revenue Leak Report lands in your inbox within 5 hours.</p>
+
+              <div className="am2-review-list">
+                {[
+                  ['Product', answers.a1],
+                  ['Revenue', answers.a2],
+                  ['Funnel', answers.a3],
+                  ['Biggest leak', answers.a4],
+                  ['What you tried', answers.a5],
+                  ['Name', answers.name],
+                  ['Email', answers.email],
+                  ['90-day goal', answers.goal],
+                ].filter(([, v]) => v?.trim()).map(([label, val]) => (
+                  <div key={label} className="am2-review-row">
+                    <div className="am2-review-label">{label}</div>
+                    <div className="am2-review-val">{val}</div>
+                  </div>
+                ))}
+              </div>
+
+              {err && <div className="am2-err">{err}</div>}
+
+              <div className="am2-submit-row">
+                <button className="am2-back-btn" onClick={() => { setPhase('form'); setStep(6) }}>← Edit</button>
+                <button className="am2-submit-btn" onClick={submit} disabled={sending}>
+                  {sending ? 'Sending…' : 'Submit — Start My Audit →'}
+                </button>
+              </div>
+              <div className="am2-fine">One-time $297 · Delivered in 5 hours · Full refund if not useful</div>
+            </div>
+          )}
+
+          {/* SUCCESS PHASE */}
+          {phase === 'success' && (
+            <div className="am2-phase am2-success-phase">
+              <div className="am2-success-icon">✓</div>
+              <h3 className="am2-success-head">Audit request received.</h3>
+              <p className="am2-success-sub">
+                We'll send your Revenue Leak Report to <strong>{answers.email}</strong> within 5 hours. Check your inbox — and spam just in case.
+              </p>
+              <div className="am2-success-fine">Questions? <strong style={{ color: '#F5C518' }}>hello@titanleap.co</strong></div>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
