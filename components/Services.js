@@ -32,8 +32,8 @@ export default function Services({ onAudit }) {
             <div>
               <div style={{fontSize:'32px',marginBottom:'14px',opacity:.7}}>✦</div>
               <div className="svc-title" style={{marginBottom:'10px'}}>Ready to start?</div>
-              <p className="svc-desc" style={{marginBottom:'24px'}}>Get a $297 audit and see exactly which systems will move the needle for your business.</p>
-              <a href="#" className="btn-primary" onClick={e=>{e.preventDefault();onAudit()}} style={{display:'inline-flex',fontSize:'11px',padding:'13px 28px'}}>Get $297 Audit →</a>
+              <p className="svc-desc" style={{marginBottom:'24px'}}>Get a free audit and see exactly which systems will move the needle for your business.</p>
+              <a href="#" className="btn-primary" onClick={e=>{e.preventDefault();onAudit()}} style={{display:'inline-flex',fontSize:'11px',padding:'13px 28px'}}>Get Free Audit →</a>
             </div>
           </div>
         </div>

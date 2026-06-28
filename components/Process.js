@@ -1,5 +1,5 @@
 const steps = [
-  { n:'1', title:'$297 Revenue Leak Audit', desc:"We dig into your funnel, traffic, and conversion points and hand back a clear report — what's broken, what to fix first, and what it'll cost." },
+  { n:'1', title:'Free Revenue Leak Audit', desc:"We dig into your funnel, traffic, and conversion points and hand back a clear report — what's broken, what to fix first, and what to do about it." },
   { n:'2', title:'Strategy Sprint', desc:'We map your full growth system and identify the highest-leverage opportunities first.' },
   { n:'3', title:'Build & Launch', desc:'We build funnels, content, automations, and ads — all tested before going live.' },
   { n:'4', title:'Automate Leads', desc:"AI-powered lead flow keeps your pipeline running 24/7 without manual effort." },
