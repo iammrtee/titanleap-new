@@ -19,7 +19,7 @@ export default function Hero({ onAudit }) {
         <h1 className="hero-h1">We build the<br /><em>growth system</em><br />your SaaS is <span className="ghost">missing.</span></h1>
         <p className="hero-p">TitanLeap is a <strong>done-for-you growth partner</strong> — not another agency selling campaigns. We design the funnel, automate your lead flow, and build the content engine that turns your SaaS into a system that compounds, month after month.</p>
         <div className="hero-actions">
-          <a href="#" className="btn-primary" onClick={e=>{e.preventDefault();onAudit()}}>Get Your $297 Audit <span>→</span></a>
+          <a href="#" className="btn-primary" onClick={e=>{e.preventDefault();onAudit()}}>Apply for Free Audit <span>→</span></a>
           <a href="#process" className="btn-ghost">See how it works ↓</a>
         </div>
         <div className="hero-trust">

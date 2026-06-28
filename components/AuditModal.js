@@ -150,7 +150,7 @@ export default function AuditModal({ open, onClose }) {
             <div className="am2-brand-mark">TL</div>
             <div>
               <div className="am2-brand-name">TitanLeap</div>
-              <div className="am2-brand-sub">Revenue Leak Audit</div>
+              <div className="am2-brand-sub">Free Revenue Audit</div>
             </div>
           </div>
 
@@ -190,10 +190,10 @@ export default function AuditModal({ open, onClose }) {
           {/* SCAN PHASE */}
           {phase === 'scan' && (
             <div className="am2-phase">
-              <div className="am2-phase-tag">Step 0 — Website Intel</div>
-              <h2 className="am2-phase-head">Drop your URL.<br />We'll pre-fill the audit.</h2>
+              <div className="am2-phase-tag">Free Audit — 5 spots/week</div>
+              <h2 className="am2-phase-head">Drop your URL.<br />We'll find the leaks.</h2>
               <p className="am2-phase-sub">
-                We scan your site in seconds — detecting your funnel, pricing, pixels, and revenue leaks — then auto-fill your form with real intel.
+                We scan your site in seconds — detecting funnel gaps, missing pixels, dead CTAs, and pricing blind spots — then pre-fill your application with real intel.
               </p>
 
               <div className={`am2-url-box${scanning ? ' am2-scanning' : ''}`}>
@@ -350,10 +350,10 @@ export default function AuditModal({ open, onClose }) {
               <div className="am2-submit-row">
                 <button className="am2-back-btn" onClick={() => { setPhase('form'); setStep(6) }}>← Edit</button>
                 <button className="am2-submit-btn" onClick={submit} disabled={sending}>
-                  {sending ? 'Sending…' : 'Submit — Start My Audit →'}
+                  {sending ? 'Submitting…' : 'Submit Application →'}
                 </button>
               </div>
-              <div className="am2-fine">One-time $297 · Delivered in 5 hours · Full refund if not useful</div>
+              <div className="am2-fine">100% Free · Delivered in 5 hours · No pitch unless you ask</div>
             </div>
           )}
 
