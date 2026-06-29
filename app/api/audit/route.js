@@ -68,7 +68,10 @@ export async function POST(request) {
         ${scanData.pixels?.length ? `<p style="margin:4px 0;font-size:13px"><strong>Pixels:</strong> ${scanData.pixels.join(', ')}</p>` : '<p style="margin:4px 0;font-size:13px;color:#dc2626"><strong>Pixels:</strong> None detected</p>'}
         ${scanData.prices?.length ? `<p style="margin:4px 0;font-size:13px"><strong>Pricing visible:</strong> ${scanData.prices.join(', ')}</p>` : '<p style="margin:4px 0;font-size:13px;color:#dc2626"><strong>Pricing:</strong> Not visible on page</p>'}
         <p style="margin:4px 0;font-size:13px"><strong>Blog/Content:</strong> ${scanData.hasBlog ? '✓ Yes' : '✗ Not detected'}</p>
-        ${scanData.liveSocials?.length ? `<p style="margin:4px 0;font-size:13px"><strong>Social:</strong> ${scanData.liveSocials.join(', ')}</p>` : ''}
+        ${scanData.liveSocials?.length
+          ? `<p style="margin:4px 0;font-size:13px"><strong>Social profiles:</strong> ${scanData.liveSocials.join(', ')}</p>`
+          : '<p style="margin:4px 0;font-size:13px;color:#dc2626"><strong>Social:</strong> No active profiles found — all links may be placeholders</p>'}
+        ${scanData.deadSocials?.length ? `<p style="margin:4px 0;font-size:13px;color:#dc2626"><strong>Dead social (#):</strong> ${scanData.deadSocials.join(', ')}</p>` : ''}
         ${leaks?.length ? `<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:6px">⚠ Auto-detected leaks:</div>${leaks.map(l=>`<div style="font-size:12px;color:#7f1d1d;margin-bottom:4px">• ${l}</div>`).join('')}</div>` : ''}
       </div>` : ''
 
