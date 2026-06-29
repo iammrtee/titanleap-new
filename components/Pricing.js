@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // ── Entry steps (one-time, before any retainer) ─────────────────────────────
 const entrySteps = [
@@ -68,13 +68,44 @@ const included = [
 
 // ── Add-ons ──────────────────────────────────────────────────────────────────
 const addons = [
-  { price: '$799', name: 'Extra Ad Channel', desc: 'Add TikTok Ads, LinkedIn Ads, or YouTube Ads management to any plan. Includes creative, targeting setup, and weekly optimization.' },
-  { price: '$499', name: 'SEO Growth Engine', desc: '8 long-form SEO articles per month, keyword strategy, internal linking, and quarterly technical SEO audit. Built to rank.' },
-  { price: '$599', name: 'Email Revenue System', desc: 'Full email list management, broadcast campaigns, automated sequences, and monthly list hygiene. Done for you, every week.' },
+  { id:'ads',   price: 799, label: '$799', name: 'Extra Ad Channel',      icon: '⚡', desc: 'Add TikTok Ads, LinkedIn Ads, or YouTube Ads to any plan. Includes creative, targeting setup, and weekly optimization.' },
+  { id:'seo',   price: 499, label: '$499', name: 'SEO Growth Engine',     icon: '📈', desc: '8 long-form SEO articles per month, keyword strategy, internal linking, and quarterly technical SEO audit. Built to rank.' },
+  { id:'email', price: 599, label: '$599', name: 'Email Revenue System',  icon: '✉️', desc: 'Full email list management, broadcast campaigns, automated sequences, and monthly list hygiene. Done for you, every week.' },
 ]
+
+// ── Animated counter hook ────────────────────────────────────────────────────
+function useCountUp(target, duration = 400) {
+  const [val, setVal] = useState(target)
+  const prev = useRef(target)
+  useEffect(() => {
+    const start = prev.current
+    const diff = target - start
+    if (diff === 0) return
+    const steps = 20
+    const stepTime = duration / steps
+    let i = 0
+    const t = setInterval(() => {
+      i++
+      setVal(Math.round(start + diff * (i / steps)))
+      if (i >= steps) { clearInterval(t); prev.current = target }
+    }, stepTime)
+    return () => clearInterval(t)
+  }, [target, duration])
+  return val
+}
 
 export default function Pricing({ onAudit }) {
   const [annual, setAnnual] = useState(false)
+  const [activeAddons, setActiveAddons] = useState(new Set())
+
+  const toggleAddon = id => setActiveAddons(prev => {
+    const next = new Set(prev)
+    next.has(id) ? next.delete(id) : next.add(id)
+    return next
+  })
+
+  const addonTotal = addons.filter(a => activeAddons.has(a.id)).reduce((s, a) => s + a.price, 0)
+  const animatedTotal = useCountUp(addonTotal)
 
   return (
     <section className="sec pricing" id="pricing">
@@ -215,18 +246,124 @@ export default function Pricing({ onAudit }) {
         <div className="price-addons">
           <div className="price-addons-head">
             <div className="sec-tag reveal">Add-Ons</div>
-            <h3 className="reveal" style={{fontFamily:"-apple-system,'SF Pro Display',BlinkMacSystemFont,sans-serif",fontSize:'32px',fontWeight:'800',letterSpacing:'-.5px'}}>Power up any plan.</h3>
-          </div>
-          <div className="addons-grid">
-            {addons.map((a, i) => (
-              <div key={i} className={`addon-card reveal${i>0?` d${i}`:''}`}>
-                <div className="addon-price">{a.price}<span>/mo</span></div>
-                <div className="addon-name">{a.name}</div>
-                <p className="addon-desc">{a.desc}</p>
+            <div className="reveal" style={{display:'flex', alignItems:'flex-end', justifyContent:'space-between', flexWrap:'wrap', gap:'12px'}}>
+              <h3 style={{fontFamily:"-apple-system,'SF Pro Display',BlinkMacSystemFont,sans-serif",fontSize:'32px',fontWeight:'800',letterSpacing:'-.5px',margin:0}}>
+                Extend any plan.
+              </h3>
+              {/* Live total pill */}
+              <div style={{
+                display:'flex', alignItems:'center', gap:'10px',
+                background: addonTotal > 0 ? 'rgba(107,33,232,.15)' : 'rgba(255,255,255,.04)',
+                border: `1px solid ${addonTotal > 0 ? 'rgba(107,33,232,.45)' : 'rgba(255,255,255,.08)'}`,
+                borderRadius:'100px', padding:'8px 18px',
+                transition:'all .3s ease',
+              }}>
+                <span style={{fontSize:'11px', fontWeight:'600', color:'rgba(196,168,255,.5)', fontFamily:"'JetBrains Mono',monospace", letterSpacing:'.06em', textTransform:'uppercase'}}>
+                  Add-ons
+                </span>
+                <span style={{
+                  fontSize:'18px', fontWeight:'900', letterSpacing:'-.5px',
+                  color: addonTotal > 0 ? 'var(--gold)' : 'rgba(255,255,255,.25)',
+                  transition:'color .3s',
+                  fontFamily:"'Archivo',sans-serif",
+                }}>
+                  {addonTotal > 0 ? `+$${animatedTotal.toLocaleString()}/mo` : '$0'}
+                </span>
+                {addonTotal > 0 && (
+                  <button
+                    onClick={() => setActiveAddons(new Set())}
+                    style={{
+                      fontSize:'10px', color:'rgba(196,168,255,.4)',
+                      background:'none', border:'none', cursor:'pointer',
+                      padding:'0', fontFamily:'inherit', transition:'color .2s',
+                    }}
+                    onMouseEnter={e=>e.target.style.color='rgba(252,165,165,.8)'}
+                    onMouseLeave={e=>e.target.style.color='rgba(196,168,255,.4)'}
+                  >
+                    clear
+                  </button>
+                )}
               </div>
-            ))}
+            </div>
           </div>
+
+          <div className="addons-grid">
+            {addons.map((a, i) => {
+              const on = activeAddons.has(a.id)
+              return (
+                <div
+                  key={i}
+                  className={`addon-card reveal${i>0?` d${i}`:''}`}
+                  onClick={() => toggleAddon(a.id)}
+                  style={{
+                    cursor:'pointer',
+                    borderColor: on ? 'rgba(107,33,232,.6)' : undefined,
+                    background: on ? 'rgba(107,33,232,.12)' : undefined,
+                    boxShadow: on ? '0 0 0 1px rgba(107,33,232,.3), 0 8px 32px rgba(107,33,232,.12)' : undefined,
+                    transition:'all .22s ease',
+                    userSelect:'none',
+                  }}
+                >
+                  {/* Toggle switch */}
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px'}}>
+                    <span style={{fontSize:'20px', lineHeight:'1'}}>{a.icon}</span>
+                    <div
+                      style={{
+                        width:'36px', height:'20px', borderRadius:'100px',
+                        background: on ? '#6B21E8' : 'rgba(255,255,255,.08)',
+                        border: `1px solid ${on ? '#8B5CF6' : 'rgba(255,255,255,.12)'}`,
+                        position:'relative', transition:'all .22s ease', flexShrink:0,
+                      }}
+                    >
+                      <div style={{
+                        position:'absolute', top:'2px',
+                        left: on ? '17px' : '2px',
+                        width:'14px', height:'14px', borderRadius:'50%',
+                        background: on ? '#fff' : 'rgba(255,255,255,.35)',
+                        transition:'left .22s ease, background .22s ease',
+                        boxShadow: on ? '0 1px 4px rgba(0,0,0,.3)' : 'none',
+                      }}/>
+                    </div>
+                  </div>
+
+                  <div className="addon-price" style={{color: on ? 'var(--gold)' : undefined, transition:'color .22s'}}>
+                    {a.label}<span>/mo</span>
+                  </div>
+                  <div className="addon-name">{a.name}</div>
+                  <p className="addon-desc">{a.desc}</p>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* CTA row when addons selected */}
+          {addonTotal > 0 && (
+            <div style={{
+              marginTop:'20px', display:'flex', alignItems:'center',
+              justifyContent:'space-between', flexWrap:'wrap', gap:'12px',
+              background:'rgba(107,33,232,.08)', border:'1px solid rgba(107,33,232,.2)',
+              borderRadius:'12px', padding:'16px 22px',
+              animation:'fadeIn .25s ease',
+            }}>
+              <div>
+                <div style={{fontSize:'13px', fontWeight:'700', color:'var(--white)', marginBottom:'2px'}}>
+                  {activeAddons.size} add-on{activeAddons.size !== 1 ? 's' : ''} selected · <span style={{color:'var(--gold)'}}>+${animatedTotal.toLocaleString()}/mo</span>
+                </div>
+                <div style={{fontSize:'11px', color:'rgba(196,168,255,.45)'}}>Added to whichever plan you choose — mention them when you apply.</div>
+              </div>
+              <a
+                href="#"
+                className="p-btn p-btn-gold"
+                onClick={e=>{e.preventDefault();onAudit()}}
+                style={{width:'auto', padding:'12px 24px', whiteSpace:'nowrap'}}
+              >
+                Apply with add-ons →
+              </a>
+            </div>
+          )}
         </div>
+
+        <style>{`@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
       </div>
     </section>
