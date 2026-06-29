@@ -29,7 +29,8 @@ const plans = [
     monthly: '1,500', annual: '1,200',
     sections: [
       { head: 'Strategy & Foundations', feats: ['<b>90-day growth blueprint</b>', 'Funnel audit + full strategy map', 'ICP definition & competitor research', 'Market positioning brief'] },
-      { head: 'Funnel & Conversion', feats: ['Short-form video (5/mo)', 'Landing page build & CRO optimization', 'Email nurture sequence (5-part)', 'Lead capture & form setup'] },
+      { head: 'Content Production', feats: ['<b>5 short-form videos/mo</b>', '<b>15 branded graphics & designs/mo</b>', 'Email nurture sequence (5-part)'] },
+      { head: 'Funnel & Conversion', feats: ['Landing page build & CRO optimization', 'Lead capture & form setup'] },
       { head: 'Automation & Reporting', feats: ['Basic AI lead scoring + CRM sync', 'CRM integration (HubSpot / Notion)', 'Monthly report + strategy call'] },
     ],
     btnClass: 'p-btn-ghost',
@@ -39,7 +40,8 @@ const plans = [
     desc: 'For SaaS with traction that needs a full growth engine built, launched, and running month over month.',
     monthly: '3,500', annual: '2,800',
     sections: [
-      { head: 'Everything in Launch Accelerator, plus:', feats: ['<b>4-person team on your account</b>', 'Full content system — video, email, SEO', 'Short-form video (12+/mo) + blog (4/mo)'] },
+      { head: 'Everything in Launch Accelerator, plus:', feats: ['<b>4-person team on your account</b>', 'Full content calendar management'] },
+      { head: 'Content Production', feats: ['<b>20 short-form videos/mo</b> <span style="font-size:10px;color:rgba(196,168,255,.4)">(4× Launch)</span>', '<b>40 branded designs/mo</b> <span style="font-size:10px;color:rgba(196,168,255,.4)">(includes ad creative)</span>', '4 long-form blog posts/mo', 'Email campaigns + broadcast management'] },
       { head: 'Paid Ads Management', feats: ['Meta + Google Ads, fully managed', 'Ad creative refresh every 2 weeks', 'Full attribution dashboard'] },
       { head: 'AI Automation', feats: ['Advanced n8n automation + attribution', 'AI lead scoring & prioritization', 'Automated follow-up sequences', 'Weekly strategy calls'] },
     ],
@@ -50,7 +52,8 @@ const plans = [
     desc: 'For established founders ready to build a category-defining brand and dominate their market entirely.',
     monthly: '6,999', annual: '5,599',
     sections: [
-      { head: 'Everything in Scaling System, plus:', feats: ['<b>Full team assigned</b> — strategist, editor, brand manager + specialists', 'Founder brand build (LinkedIn daily)', 'TikTok + YouTube Shorts system'] },
+      { head: 'Everything in Scaling System, plus:', feats: ['<b>Full team assigned</b> — strategist, editor, brand manager + specialists'] },
+      { head: 'Content Production', feats: ['<b>Up to 60 short-form videos/mo</b> <span style="font-size:10px;color:rgba(196,168,255,.4)">(3× Scaling)</span>', '<b>Up to 100 branded designs/mo</b> <span style="font-size:10px;color:rgba(196,168,255,.4)">(3× Scaling)</span>', '8 long-form blog posts/mo', 'LinkedIn daily content (30 posts/mo)', 'TikTok + YouTube Shorts system', 'Founder brand build — personal authority content'] },
       { head: 'Enterprise Growth', feats: ['Dedicated senior growth strategist', 'Custom AI automation builds (unlimited)', 'PR & thought leadership outreach', 'Competitive intelligence reports'] },
       { head: 'Concierge Support', feats: ['Weekly strategy + performance calls', 'Slack direct access + 24h priority'] },
     ],

@@ -127,7 +127,14 @@ export default function AuditModal({ open, onClose }) {
         {/* Sidebar */}
         <aside className="diag-sidebar">
           <div className="diag-brand">
-            <div className="diag-brand-mark">TL</div>
+            <div className="diag-brand-mark">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="32" height="32" style={{display:'block'}}>
+                <circle cx="200" cy="200" r="200" fill="#4520CC"/>
+                <path d="M 90 118 H 202 V 202 A 82 82 0 0 0 118 280 H 90 Z" fill="white"/>
+                <rect x="218" y="118" width="52" height="162" rx="7" fill="white"/>
+                <circle cx="285" cy="148" r="40" fill="#F5C518"/>
+              </svg>
+            </div>
             <div>
               <div className="diag-brand-name">TitanLeap</div>
               <div className="diag-brand-sub">Revenue Leak Audit</div>
@@ -305,57 +312,142 @@ export default function AuditModal({ open, onClose }) {
           {phase === 'human' && (
             <div className="diag-screen">
               <div className="diag-screen-tag">Step 3 of 3</div>
-              <h3 className="diag-screen-h">A few things only you know.</h3>
+              <h3 className="diag-screen-h">Almost there.</h3>
+              <p className="diag-screen-sub">Two quick questions only you can answer.</p>
 
-              <div className="diag-review-grid">
+              {/* Name + email side by side */}
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'22px'}}>
                 <div className="diag-field">
-                  <label>Full Name <span className="diag-req">*</span></label>
-                  <input className="diag-input" value={data.name} onChange={e=>set('name',e.target.value)} placeholder="Your name" autoFocus/>
-                </div>
-                <div className="diag-field">
-                  <label>Work Email <span className="diag-req">*</span></label>
-                  <input className="diag-input" type="email" value={data.email} onChange={e=>{set('email',e.target.value);setErr('')}} placeholder="you@company.com"/>
-                </div>
-
-                <div className="diag-field diag-full">
-                  <label>Biggest bottleneck right now <span className="diag-req">*</span></label>
-                  <div className="diag-radio-stack">
-                    {['Not enough traffic','Traffic doesn\'t convert','Leads don\'t book or buy','Can\'t track what works','Other'].map(v=>(
-                      <button key={v} className={`diag-radio${data.bottleneck===v?' sel':''}`} onClick={()=>{set('bottleneck',v);setErr('')}}>
-                        <span className="diag-radio-dot"/>{v}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="diag-field diag-full">
-                  <label>What would make this audit a win? <span className="diag-req">*</span></label>
-                  <textarea className="diag-textarea" style={{minHeight:'80px'}} value={data.auditWin} onChange={e=>set('auditWin',e.target.value)} placeholder="e.g. Know exactly why our trial-to-paid conversion is stuck at 8% and what to fix first."/>
-                </div>
-
-                <div className="diag-field diag-full">
-                  <label>Budget range for fixing what we find</label>
-                  <div className="diag-chips">
-                    {['Just exploring','Under $1k','$1k–$5k','$5k+'].map(v=>(
-                      <button key={v} className={`diag-chip${data.budget===v?' sel':''}`} onClick={()=>set('budget',v)}>{v}</button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="diag-field diag-full">
-                  <label>Google Business Profile URL <span className="diag-hint">(optional — we verify manually)</span></label>
-                  <input className="diag-input" value={data.gbpUrl} onChange={e=>set('gbpUrl',e.target.value)} placeholder="https://g.page/your-business"/>
-                </div>
-
-                <div className="diag-field diag-full">
-                  <label className="diag-consent-label">
-                    <input type="checkbox" checked={data.consentEmail} onChange={e=>set('consentEmail',e.target.checked)} className="diag-checkbox"/>
-                    I agree to receive my audit results by email
+                  <label style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'7px', display:'block'}}>
+                    Your name <span style={{color:'#fca5a5'}}>*</span>
                   </label>
+                  <input className="diag-input" value={data.name} onChange={e=>set('name',e.target.value)} placeholder="Full name" autoFocus/>
+                </div>
+                <div className="diag-field">
+                  <label style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'7px', display:'block'}}>
+                    Work email <span style={{color:'#fca5a5'}}>*</span>
+                  </label>
+                  <input className="diag-input" type="email" value={data.email} onChange={e=>{set('email',e.target.value);setErr('')}} placeholder="you@company.com"/>
                 </div>
               </div>
 
-              {err && <div className="diag-err" style={{marginBottom:'12px'}}>{err}</div>}
+              {/* Bottleneck — icon option cards */}
+              <div style={{marginBottom:'22px'}}>
+                <div style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'12px'}}>
+                  Where's the real friction? <span style={{color:'#fca5a5'}}>*</span>
+                </div>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px'}}>
+                  {[
+                    { v:'Not enough traffic',         icon:'📉', sub:'Top of funnel is too thin' },
+                    { v:"Traffic doesn't convert",    icon:'🎯', sub:'Visitors leave without acting' },
+                    { v:"Leads don't book or buy",    icon:'💸', sub:'Pipeline leaks after inquiry' },
+                    { v:"Can't track what's working", icon:'📊', sub:'Blind to what actually converts' },
+                    { v:'Something else',             icon:'💬', sub:'Tell us more below' },
+                  ].map(opt => {
+                    const sel = data.bottleneck === opt.v
+                    return (
+                      <div
+                        key={opt.v}
+                        onClick={() => { set('bottleneck', opt.v); setErr('') }}
+                        style={{
+                          display:'flex', alignItems:'center', gap:'12px',
+                          padding:'12px 14px',
+                          background: sel ? 'rgba(124,58,237,.13)' : 'rgba(255,255,255,.02)',
+                          border:`1.5px solid ${sel ? '#7C3AED' : 'rgba(124,58,237,.11)'}`,
+                          borderRadius:'10px', cursor:'pointer',
+                          transition:'all .15s',
+                          gridColumn: opt.v === 'Something else' ? '1/-1' : undefined,
+                        }}
+                      >
+                        <span style={{fontSize:'18px', lineHeight:'1', flexShrink:0}}>{opt.icon}</span>
+                        <div style={{flex:1, minWidth:0}}>
+                          <div style={{fontSize:'12.5px', fontWeight:'600', color: sel ? '#EFE9FF' : 'rgba(239,233,255,.7)', lineHeight:'1.3', marginBottom:'2px'}}>{opt.v}</div>
+                          <div style={{fontSize:'10.5px', color:'rgba(196,168,255,.38)', lineHeight:'1.2'}}>{opt.sub}</div>
+                        </div>
+                        <div style={{
+                          width:'18px', height:'18px', borderRadius:'50%', flexShrink:0,
+                          background: sel ? '#7C3AED' : 'rgba(255,255,255,.06)',
+                          border:`1.5px solid ${sel ? '#8B5CF6' : 'rgba(255,255,255,.1)'}`,
+                          display:'flex', alignItems:'center', justifyContent:'center',
+                          transition:'all .15s',
+                        }}>
+                          {sel && <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2L7.5 2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Win textarea */}
+              <div style={{marginBottom:'22px'}}>
+                <div style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'8px'}}>
+                  What would make this a win for you? <span style={{color:'#fca5a5'}}>*</span>
+                </div>
+                <textarea
+                  className="diag-textarea"
+                  style={{minHeight:'96px'}}
+                  value={data.auditWin}
+                  onChange={e=>set('auditWin',e.target.value)}
+                  placeholder="e.g. Know exactly why our trial-to-paid is stuck at 8% and what to fix first."
+                />
+              </div>
+
+              {/* Budget */}
+              <div style={{marginBottom:'22px'}}>
+                <div style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'10px'}}>
+                  Investment range for fixing what we find
+                </div>
+                <div className="diag-chips">
+                  {['Just exploring','Under $1k','$1k–$5k','$5k+'].map(v=>(
+                    <button key={v} className={`diag-chip${data.budget===v?' sel':''}`} onClick={()=>set('budget',v)}>{v}</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* GBP — low-key optional */}
+              <div style={{marginBottom:'22px'}}>
+                <div style={{fontSize:'11.5px', fontWeight:'500', color:'rgba(196,168,255,.32)', marginBottom:'8px'}}>
+                  Google Business Profile <span style={{fontSize:'10px'}}>— optional, we verify it manually</span>
+                </div>
+                <input className="diag-input" value={data.gbpUrl} onChange={e=>set('gbpUrl',e.target.value)} placeholder="https://g.page/your-business" style={{opacity:.65}}/>
+              </div>
+
+              {/* Custom consent toggle */}
+              <div
+                onClick={() => set('consentEmail', !data.consentEmail)}
+                style={{
+                  display:'flex', alignItems:'center', gap:'14px',
+                  padding:'13px 16px', borderRadius:'10px', cursor:'pointer',
+                  background: data.consentEmail ? 'rgba(34,197,94,.06)' : 'rgba(255,255,255,.02)',
+                  border:`1.5px solid ${data.consentEmail ? 'rgba(34,197,94,.28)' : 'rgba(255,255,255,.07)'}`,
+                  transition:'all .22s',
+                }}
+              >
+                <div style={{
+                  width:'38px', height:'22px', borderRadius:'100px', flexShrink:0,
+                  background: data.consentEmail ? '#22c55e' : 'rgba(255,255,255,.07)',
+                  border:`1px solid ${data.consentEmail ? '#4ade80' : 'rgba(255,255,255,.1)'}`,
+                  position:'relative', transition:'all .22s',
+                }}>
+                  <div style={{
+                    position:'absolute', top:'3px',
+                    left: data.consentEmail ? '18px' : '3px',
+                    width:'14px', height:'14px', borderRadius:'50%',
+                    background: data.consentEmail ? '#fff' : 'rgba(255,255,255,.35)',
+                    transition:'left .22s ease',
+                    boxShadow: data.consentEmail ? '0 1px 4px rgba(0,0,0,.25)' : 'none',
+                  }}/>
+                </div>
+                <div>
+                  <div style={{fontSize:'13px', fontWeight:'600', lineHeight:'1.3', color: data.consentEmail ? 'rgba(239,233,255,.9)' : 'rgba(196,168,255,.5)', transition:'color .2s'}}>
+                    Send my audit to {data.email || 'my email'}
+                  </div>
+                  <div style={{fontSize:'10.5px', color:'rgba(196,168,255,.3)', marginTop:'2px'}}>Required — this is how we deliver your report</div>
+                </div>
+              </div>
+
+              {err && <div className="diag-err" style={{marginTop:'12px'}}>{err}</div>}
 
               <div className="diag-nav-row">
                 <button className="diag-back" onClick={() => goTo('review')}>← Back</button>

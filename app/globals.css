@@ -1591,11 +1591,9 @@ html.light .am2-sidebar { background:#06030D; }
   margin-bottom:36px; flex-shrink:0; position:relative;
 }
 .diag-brand-mark {
-  width:30px; height:30px; border-radius:8px;
-  background:linear-gradient(135deg,#6B21E8,#9333ea);
-  display:flex; align-items:center; justify-content:center;
-  font-size:9px; font-weight:900; color:#fff;
-  letter-spacing:.05em; flex-shrink:0;
+  width:36px; height:36px; border-radius:10px;
+  overflow:hidden; display:flex; align-items:center;
+  justify-content:center; flex-shrink:0;
 }
 .diag-brand-name { font-size:12px; font-weight:800; color:#EFE9FF; letter-spacing:-.2px; }
 .diag-brand-sub  { font-size:9.5px; color:rgba(196,168,255,.38); margin-top:1px; }
@@ -1897,20 +1895,27 @@ html.light .am2-sidebar { background:#06030D; }
 .diag-success-p strong { color:#EFE9FF; font-weight:700; }
 .diag-success-fine { font-size:12px; color:rgba(196,168,255,.28); margin-top:4px; }
 
-/* Light mode stays dark */
-html.light .diag-shell,
-html.light .diag-sidebar { background:#050111; }
-
-/* ── Mobile ── */
-@media (max-width:700px) {
-  .diag-shell { max-width:100%; border-radius:20px 20px 0 0; height:92vh; flex-direction:column; }
-  .diag-sidebar {
-    width:100%; border-right:none; border-bottom:1px solid rgba(107,33,232,.1);
-    padding:14px 18px; flex-direction:row; align-items:center;
-  }
-  .diag-brand { margin-bottom:0; }
-  .diag-steps, .diag-sidebar-leaks, .diag-sidebar-footer { display:none; }
-  .diag-main { padding:24px 20px 20px; }
-  .diag-radio-stack { grid-template-columns:1fr; }
-  .diag-screen-h { font-size:20px; }
+/* ── Light mode for the modal ── */
+html.light .diag-shell {
+  background:#FFFFFF;
+  border-color:rgba(107,33,232,.18);
+  box-shadow:0 32px 80px rgba(0,0,0,.12), 0 0 0 1px rgba(107,33,232,.1);
 }
+html.light .diag-sidebar {
+  background:#F5F2FF;
+  border-right:1px solid rgba(107,33,232,.12);
+}
+html.light .diag-sidebar::before { display:none; }
+html.light .diag-brand-name { color:#0F0720; }
+html.light .diag-brand-sub  { color:rgba(80,40,160,.45); }
+html.light .diag-step-dot {
+  background:rgba(107,33,232,.07);
+  border-color:rgba(107,33,232,.18);
+  color:#6B21E8;
+}
+html.light .diag-step.active .diag-step-dot {
+  background:#6B21E8; color:#fff;
+  box-shadow:0 0 0 4px rgba(107,33,232,.14);
+}
+html.light .diag-step.done .diag-step-dot {
+  background:rgb
