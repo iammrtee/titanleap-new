@@ -313,80 +313,54 @@ export default function AuditModal({ open, onClose }) {
             <div className="diag-screen">
               <div className="diag-screen-tag">Step 3 of 3</div>
               <h3 className="diag-screen-h">Almost there.</h3>
-              <p className="diag-screen-sub">Two quick questions only you can answer.</p>
+              <p className="diag-screen-sub">Two quick questions only you can answer — then we get to work.</p>
 
               {/* Name + email side by side */}
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'22px'}}>
+              <div className="diag-form-row">
                 <div className="diag-field">
-                  <label style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'7px', display:'block'}}>
-                    Your name <span style={{color:'#fca5a5'}}>*</span>
-                  </label>
+                  <label className="diag-field-label">Your name <span className="req">*</span></label>
                   <input className="diag-input" value={data.name} onChange={e=>set('name',e.target.value)} placeholder="Full name" autoFocus/>
                 </div>
                 <div className="diag-field">
-                  <label style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'7px', display:'block'}}>
-                    Work email <span style={{color:'#fca5a5'}}>*</span>
-                  </label>
+                  <label className="diag-field-label">Work email <span className="req">*</span></label>
                   <input className="diag-input" type="email" value={data.email} onChange={e=>{set('email',e.target.value);setErr('')}} placeholder="you@company.com"/>
                 </div>
               </div>
 
-              {/* Bottleneck — icon option cards */}
-              <div style={{marginBottom:'22px'}}>
-                <div style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'12px'}}>
-                  Where's the real friction? <span style={{color:'#fca5a5'}}>*</span>
-                </div>
-                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px'}}>
+              {/* Bottleneck — option cards */}
+              <div className="diag-form-section">
+                <label className="diag-field-label">Where's the real friction? <span className="req">*</span></label>
+                <div className="diag-option-grid">
                   {[
                     { v:'Not enough traffic',         icon:'📉', sub:'Top of funnel is too thin' },
                     { v:"Traffic doesn't convert",    icon:'🎯', sub:'Visitors leave without acting' },
                     { v:"Leads don't book or buy",    icon:'💸', sub:'Pipeline leaks after inquiry' },
-                    { v:"Can't track what's working", icon:'📊', sub:'Blind to what actually converts' },
-                    { v:'Something else',             icon:'💬', sub:'Tell us more below' },
-                  ].map(opt => {
-                    const sel = data.bottleneck === opt.v
-                    return (
-                      <div
-                        key={opt.v}
-                        onClick={() => { set('bottleneck', opt.v); setErr('') }}
-                        style={{
-                          display:'flex', alignItems:'center', gap:'12px',
-                          padding:'12px 14px',
-                          background: sel ? 'rgba(124,58,237,.13)' : 'rgba(255,255,255,.02)',
-                          border:`1.5px solid ${sel ? '#7C3AED' : 'rgba(124,58,237,.11)'}`,
-                          borderRadius:'10px', cursor:'pointer',
-                          transition:'all .15s',
-                          gridColumn: opt.v === 'Something else' ? '1/-1' : undefined,
-                        }}
-                      >
-                        <span style={{fontSize:'18px', lineHeight:'1', flexShrink:0}}>{opt.icon}</span>
-                        <div style={{flex:1, minWidth:0}}>
-                          <div style={{fontSize:'12.5px', fontWeight:'600', color: sel ? '#EFE9FF' : 'rgba(239,233,255,.7)', lineHeight:'1.3', marginBottom:'2px'}}>{opt.v}</div>
-                          <div style={{fontSize:'10.5px', color:'rgba(196,168,255,.38)', lineHeight:'1.2'}}>{opt.sub}</div>
-                        </div>
-                        <div style={{
-                          width:'18px', height:'18px', borderRadius:'50%', flexShrink:0,
-                          background: sel ? '#7C3AED' : 'rgba(255,255,255,.06)',
-                          border:`1.5px solid ${sel ? '#8B5CF6' : 'rgba(255,255,255,.1)'}`,
-                          display:'flex', alignItems:'center', justifyContent:'center',
-                          transition:'all .15s',
-                        }}>
-                          {sel && <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2L7.5 2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                        </div>
-                      </div>
-                    )
-                  })}
+                    { v:"Can't track what's working", icon:'📊', sub:'Blind to what converts' },
+                    { v:'Something else',             icon:'💬', sub:'Tell us below', wide:true },
+                  ].map(opt => (
+                    <button
+                      key={opt.v}
+                      className={`diag-option-card${data.bottleneck===opt.v?' sel':''}${opt.wide?' wide':''}`}
+                      onClick={() => { set('bottleneck', opt.v); setErr('') }}
+                    >
+                      <span className="diag-option-icon">{opt.icon}</span>
+                      <span className="diag-option-body">
+                        <span className="diag-option-title">{opt.v}</span>
+                        <span className="diag-option-sub">{opt.sub}</span>
+                      </span>
+                      <span className="diag-option-check">
+                        {data.bottleneck===opt.v && <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2L7.5 2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
               {/* Win textarea */}
-              <div style={{marginBottom:'22px'}}>
-                <div style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'8px'}}>
-                  What would make this a win for you? <span style={{color:'#fca5a5'}}>*</span>
-                </div>
+              <div className="diag-form-section">
+                <label className="diag-field-label">What would make this a win? <span className="req">*</span></label>
                 <textarea
                   className="diag-textarea"
-                  style={{minHeight:'96px'}}
                   value={data.auditWin}
                   onChange={e=>set('auditWin',e.target.value)}
                   placeholder="e.g. Know exactly why our trial-to-paid is stuck at 8% and what to fix first."
@@ -394,10 +368,8 @@ export default function AuditModal({ open, onClose }) {
               </div>
 
               {/* Budget */}
-              <div style={{marginBottom:'22px'}}>
-                <div style={{fontSize:'12px', fontWeight:'600', color:'rgba(196,168,255,.5)', letterSpacing:'.01em', marginBottom:'10px'}}>
-                  Investment range for fixing what we find
-                </div>
+              <div className="diag-form-section">
+                <label className="diag-field-label">Investment range for fixing what we find</label>
                 <div className="diag-chips">
                   {['Just exploring','Under $1k','$1k–$5k','$5k+'].map(v=>(
                     <button key={v} className={`diag-chip${data.budget===v?' sel':''}`} onClick={()=>set('budget',v)}>{v}</button>
@@ -405,45 +377,18 @@ export default function AuditModal({ open, onClose }) {
                 </div>
               </div>
 
-              {/* GBP — low-key optional */}
-              <div style={{marginBottom:'22px'}}>
-                <div style={{fontSize:'11.5px', fontWeight:'500', color:'rgba(196,168,255,.32)', marginBottom:'8px'}}>
-                  Google Business Profile <span style={{fontSize:'10px'}}>— optional, we verify it manually</span>
-                </div>
-                <input className="diag-input" value={data.gbpUrl} onChange={e=>set('gbpUrl',e.target.value)} placeholder="https://g.page/your-business" style={{opacity:.65}}/>
+              {/* GBP — optional, demoted */}
+              <div className="diag-form-section">
+                <label className="diag-field-label" style={{opacity:.55}}>Google Business Profile — optional</label>
+                <input className="diag-input" value={data.gbpUrl} onChange={e=>set('gbpUrl',e.target.value)} placeholder="https://g.page/your-business" style={{opacity:.6}}/>
               </div>
 
-              {/* Custom consent toggle */}
-              <div
-                onClick={() => set('consentEmail', !data.consentEmail)}
-                style={{
-                  display:'flex', alignItems:'center', gap:'14px',
-                  padding:'13px 16px', borderRadius:'10px', cursor:'pointer',
-                  background: data.consentEmail ? 'rgba(34,197,94,.06)' : 'rgba(255,255,255,.02)',
-                  border:`1.5px solid ${data.consentEmail ? 'rgba(34,197,94,.28)' : 'rgba(255,255,255,.07)'}`,
-                  transition:'all .22s',
-                }}
-              >
-                <div style={{
-                  width:'38px', height:'22px', borderRadius:'100px', flexShrink:0,
-                  background: data.consentEmail ? '#22c55e' : 'rgba(255,255,255,.07)',
-                  border:`1px solid ${data.consentEmail ? '#4ade80' : 'rgba(255,255,255,.1)'}`,
-                  position:'relative', transition:'all .22s',
-                }}>
-                  <div style={{
-                    position:'absolute', top:'3px',
-                    left: data.consentEmail ? '18px' : '3px',
-                    width:'14px', height:'14px', borderRadius:'50%',
-                    background: data.consentEmail ? '#fff' : 'rgba(255,255,255,.35)',
-                    transition:'left .22s ease',
-                    boxShadow: data.consentEmail ? '0 1px 4px rgba(0,0,0,.25)' : 'none',
-                  }}/>
-                </div>
-                <div>
-                  <div style={{fontSize:'13px', fontWeight:'600', lineHeight:'1.3', color: data.consentEmail ? 'rgba(239,233,255,.9)' : 'rgba(196,168,255,.5)', transition:'color .2s'}}>
-                    Send my audit to {data.email || 'my email'}
-                  </div>
-                  <div style={{fontSize:'10.5px', color:'rgba(196,168,255,.3)', marginTop:'2px'}}>Required — this is how we deliver your report</div>
+              {/* Consent toggle */}
+              <div className={`diag-consent-row${data.consentEmail?' on':''}`} onClick={() => set('consentEmail', !data.consentEmail)}>
+                <div className="diag-toggle-pill"><div className="diag-toggle-dot"/></div>
+                <div className="diag-toggle-text">
+                  <span className="diag-toggle-main">Send my audit to {data.email || 'my email'}</span>
+                  <span className="diag-toggle-sub">Required — this is how we deliver your report</span>
                 </div>
               </div>
 
@@ -479,3 +424,4 @@ export default function AuditModal({ open, onClose }) {
     </div>
   )
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
