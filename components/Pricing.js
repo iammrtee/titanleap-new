@@ -1,49 +1,72 @@
 'use client'
 import { useState } from 'react'
 
+// ── Entry steps (one-time, before any retainer) ─────────────────────────────
+const entrySteps = [
+  {
+    n: '1',
+    name: 'Revenue Leak Audit',
+    price: '$297',
+    period: 'one-time',
+    desc: 'Your funnel, traffic, and conversion gaps — three ranked leaks with dollar-range impact, delivered in 5 hours. The average leak we find costs $4k–$11k/mo.',
+    cta: 'Get the audit →',
+  },
+  {
+    n: '2',
+    name: 'Growth System Sprint',
+    price: '$2,500',
+    period: 'one-time',
+    desc: 'Not ready for a retainer? We hand you a 90-day growth blueprint and build your core system — positioning, one launched funnel, automated follow-up. Yours to keep. Credits toward any plan.',
+    cta: 'Book a sprint →',
+  },
+]
+
+// ── Retainer plans (all original features preserved, prices updated) ─────────
 const plans = [
   {
     tier: 'Starter', name: 'Launch Accelerator', hot: false,
     desc: 'For pre-revenue or early-stage SaaS ready to build the foundation of a real growth system.',
-    monthly: '2,999', annual: '2,399',
+    monthly: '1,500', annual: '1,200',
     sections: [
-      { head: 'Strategy & Foundations', feats: ['Funnel audit + full strategy map','ICP definition & competitor research','Market positioning brief'] },
-      { head: 'Funnel & Conversion', feats: ['Landing page build & CRO optimization','Email nurture sequence (5-part)','Lead capture & form setup'] },
-      { head: 'Automation & Reporting', feats: ['Basic AI lead scoring','CRM integration (HubSpot / Notion)','Monthly performance report','1 strategy call/month'] },
+      { head: 'Strategy & Foundations', feats: ['Funnel audit + full strategy map', 'ICP definition & competitor research', 'Market positioning brief'] },
+      { head: 'Funnel & Conversion', feats: ['Landing page build & CRO optimization', 'Email nurture sequence (5-part)', 'Lead capture & form setup'] },
+      { head: 'Automation & Reporting', feats: ['Basic AI lead scoring', 'CRM integration (HubSpot / Notion)', 'Monthly performance report', '1 strategy call/month'] },
     ],
     btnClass: 'p-btn-ghost',
   },
   {
     tier: 'Growth', name: 'Scaling System', hot: true,
     desc: 'For SaaS with traction that needs a full growth engine built, launched, and running month over month.',
-    monthly: '6,999', annual: '5,599',
+    monthly: '3,500', annual: '2,800',
     sections: [
-      { head: 'Everything in Launch Accelerator, plus:', feats: ['Full content system — video, email, SEO','Short-form video production (8/mo)','Long-form blog content (4/mo)'] },
-      { head: 'Paid Ads Management', feats: ['Meta Ads setup, management & creative','Google Ads (Search + Display)','Ad creative refresh every 2 weeks','Full attribution dashboard'] },
-      { head: 'AI Automation', feats: ['Advanced n8n lead automation','AI lead scoring & prioritization','Automated follow-up sequences','Bi-weekly strategy calls'] },
+      { head: 'Everything in Launch Accelerator, plus:', feats: ['Full content system — video, email, SEO', 'Short-form video production (8/mo)', 'Long-form blog content (4/mo)'] },
+      { head: 'Paid Ads Management', feats: ['Meta Ads setup, management & creative', 'Google Ads (Search + Display)', 'Ad creative refresh every 2 weeks', 'Full attribution dashboard'] },
+      { head: 'AI Automation', feats: ['Advanced n8n lead automation', 'AI lead scoring & prioritization', 'Automated follow-up sequences', 'Bi-weekly strategy calls'] },
     ],
     btnClass: 'p-btn-gold',
   },
   {
     tier: 'Authority', name: 'Authority Domination', hot: false,
     desc: 'For established founders ready to build a category-defining brand and dominate their market entirely.',
-    monthly: '9,999', annual: '7,999',
+    monthly: '6,999', annual: '5,599',
     sections: [
-      { head: 'Everything in Scaling System, plus:', feats: ['Founder personal brand strategy & build','LinkedIn authority content (daily)','TikTok & YouTube Shorts system'] },
-      { head: 'Enterprise Growth', feats: ['Dedicated senior growth strategist','Custom AI automation builds (unlimited)','PR & thought leadership outreach','Competitive intelligence reports'] },
-      { head: 'Concierge Support', feats: ['Weekly strategy + performance calls','Slack direct access to your team','Priority 24h response guarantee'] },
+      { head: 'Everything in Scaling System, plus:', feats: ['Founder personal brand strategy & build', 'LinkedIn authority content (daily)', 'TikTok & YouTube Shorts system'] },
+      { head: 'Enterprise Growth', feats: ['Dedicated senior growth strategist', 'Custom AI automation builds (unlimited)', 'PR & thought leadership outreach', 'Competitive intelligence reports'] },
+      { head: 'Concierge Support', feats: ['Weekly strategy + performance calls', 'Slack direct access to your team', 'Priority 24h response guarantee'] },
     ],
     btnClass: 'p-btn-ghost',
   },
 ]
 
+// ── Included in every plan ───────────────────────────────────────────────────
 const included = [
-  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>, title: 'Free funnel audit', desc: 'No commitment. Just a clear picture of where your revenue is leaking.' },
-  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, title: 'No lock-in contracts', desc: 'Monthly rolling — leave anytime. We earn your business every single month.' },
-  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, title: 'Live performance dashboard', desc: 'Real-time view of every metric that matters — funnel, CAC, ROAS, leads.' },
-  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, title: '90-day results guarantee', desc: "If we don't move your growth metrics in 90 days, we work free until we do." },
+  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, title: 'No lock-in contracts', desc: ' Monthly rolling — leave anytime. We earn your business every single month.' },
+  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, title: 'Live performance dashboard', desc: ' Real-time view of every metric that matters — funnel, CAC, ROAS, leads.' },
+  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, title: '90-day results guarantee', desc: " If we don't move your growth metrics in 90 days, we work free until we do." },
+  { icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, title: 'Founder-direct', desc: " You work with the team building your system — not an account manager relaying messages." },
 ]
 
+// ── Add-ons ──────────────────────────────────────────────────────────────────
 const addons = [
   { price: '$799', name: 'Extra Ad Channel', desc: 'Add TikTok Ads, LinkedIn Ads, or YouTube Ads management to any plan. Includes creative, targeting setup, and weekly optimization.' },
   { price: '$499', name: 'SEO Growth Engine', desc: '8 long-form SEO articles per month, keyword strategy, internal linking, and quarterly technical SEO audit. Built to rank.' },
@@ -56,12 +79,75 @@ export default function Pricing({ onAudit }) {
   return (
     <section className="sec pricing" id="pricing">
       <div className="wrap">
+
+        {/* Head */}
         <div className="price-head">
           <div className="sec-tag reveal" style={{justifyContent:'center'}}>Pricing</div>
-          <h2 className="price-h2 reveal">Pick your <em>growth tier.</em></h2>
-          <p className="price-sub reveal">Every plan starts with a free funnel audit. No commitment, no contracts — cancel anytime.</p>
+          <h2 className="price-h2 reveal">Find the leak. <em>Then fix it.</em></h2>
+          <p className="price-sub reveal">Every founder starts in the same place — a $297 audit that shows exactly where revenue is leaking. From there you choose how far you want us to take it. No lock-in. No contracts.</p>
         </div>
 
+        {/* ── Entry steps ── */}
+        <div className="reveal" style={{marginBottom:'8px'}}>
+          <div style={{
+            fontFamily:"'JetBrains Mono',monospace", fontSize:'10px',
+            letterSpacing:'.16em', textTransform:'uppercase',
+            color:'rgba(196,168,255,.4)', marginBottom:'14px',
+          }}>
+            Every engagement starts here
+          </div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px'}}>
+            {entrySteps.map((s, i) => (
+              <div key={i} className="p-card" style={{padding:'24px 26px'}}>
+                <div style={{display:'flex', alignItems:'flex-start', gap:'16px'}}>
+                  <div style={{
+                    fontFamily:"'Archivo',sans-serif", fontWeight:'800',
+                    fontSize:'26px', color:'var(--p300)', lineHeight:'1',
+                    flexShrink:0, width:'32px',
+                  }}>{s.n}</div>
+                  <div style={{flex:1}}>
+                    <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'10px', flexWrap:'wrap', marginBottom:'8px'}}>
+                      <div style={{fontFamily:"'Archivo',sans-serif", fontWeight:'700', fontSize:'16px', color:'var(--white)'}}>
+                        {s.name}
+                      </div>
+                      <div style={{fontFamily:"'Archivo',sans-serif", fontWeight:'800', fontSize:'18px', color:'var(--white)', whiteSpace:'nowrap'}}>
+                        {s.price} <span style={{fontSize:'11px', color:'var(--p200)', fontWeight:'600'}}>{s.period}</span>
+                      </div>
+                    </div>
+                    <p style={{fontSize:'13px', color:'var(--p200)', lineHeight:'1.55', marginBottom:'14px'}}>{s.desc}</p>
+                    <a
+                      href="#"
+                      onClick={e => { e.preventDefault(); onAudit() }}
+                      style={{
+                        fontSize:'12px', fontWeight:'700', color:'var(--white)',
+                        textDecoration:'none', borderBottom:'1px solid rgba(255,255,255,.2)',
+                        paddingBottom:'2px', transition:'border-color .18s',
+                        fontFamily:"'Archivo',sans-serif",
+                      }}
+                    >
+                      {s.cta}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="reveal" style={{
+          margin:'28px 0 20px',
+          fontFamily:"'JetBrains Mono',monospace", fontSize:'10px',
+          letterSpacing:'.16em', textTransform:'uppercase',
+          color:'rgba(196,168,255,.35)',
+          display:'flex', alignItems:'center', gap:'16px',
+        }}>
+          <div style={{flex:1, height:'1px', background:'rgba(107,33,232,.18)'}}/>
+          <span>Then pick how far we take it</span>
+          <div style={{flex:1, height:'1px', background:'rgba(107,33,232,.18)'}}/>
+        </div>
+
+        {/* Annual toggle */}
         <div className="price-toggle reveal">
           <span className={`toggle-label${!annual?' active':''}`}>Monthly</span>
           <div className={`toggle-switch${annual?' on':''}`} onClick={() => setAnnual(a => !a)}>
@@ -71,6 +157,7 @@ export default function Pricing({ onAudit }) {
           <span className={`toggle-badge${annual?' show':''}`}>Save 20%</span>
         </div>
 
+        {/* Retainer cards */}
         <div className="price-grid">
           {plans.map((p, i) => (
             <div key={i} className={`p-card reveal${p.hot?' hot':''}`} style={i>0?{animationDelay:`${i*0.1}s`}:{}}>
@@ -102,6 +189,16 @@ export default function Pricing({ onAudit }) {
           ))}
         </div>
 
+        {/* Capacity note */}
+        <p className="reveal" style={{
+          marginTop:'24px', textAlign:'center',
+          fontFamily:"'JetBrains Mono',monospace", fontSize:'12px',
+          color:'var(--p200)', letterSpacing:'.02em',
+        }}>
+          We take on a <strong style={{color:'var(--gold)'}}>limited number of retainer clients at a time</strong> so every system gets built right. Current availability shown when you apply.
+        </p>
+
+        {/* Included strip */}
         <div className="price-all reveal">
           <div className="price-all-head">✦ Included in every plan</div>
           <div className="price-all-grid">
@@ -114,6 +211,7 @@ export default function Pricing({ onAudit }) {
           </div>
         </div>
 
+        {/* Add-ons */}
         <div className="price-addons">
           <div className="price-addons-head">
             <div className="sec-tag reveal">Add-Ons</div>
@@ -129,6 +227,7 @@ export default function Pricing({ onAudit }) {
             ))}
           </div>
         </div>
+
       </div>
     </section>
   )
