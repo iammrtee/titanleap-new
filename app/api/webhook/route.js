@@ -1,13 +1,25 @@
-// Unified webhook — handles Stripe + Paystack, sends email on payment
+// Unified webhook — Stripe + Paystack → Gmail notification via Google Workspace
 
 import crypto from 'crypto'
 import Stripe from 'stripe'
+import nodemailer from 'nodemailer'
+
+function getTransport() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  })
+}
 
 async function sendEmail({ name, email, planName, amount, processor }) {
-  const key = process.env.RESEND_API_KEY
-  if (!key) { console.log('[webhook] No RESEND_API_KEY'); return }
+  const user = process.env.GMAIL_USER
+  if (!user) { console.log('[webhook] No GMAIL_USER'); return }
 
   const processorLabel = processor === 'stripe' ? 'Stripe' : 'Paystack'
+
   const html = `
     <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#080314;color:#F0EAFF;border-radius:12px;overflow:hidden">
       <div style="background:linear-gradient(135deg,#190D3E,#0D0520);padding:32px 32px 24px;border-bottom:1px solid rgba(107,33,232,.3)">
@@ -45,17 +57,17 @@ async function sendEmail({ name, email, planName, amount, processor }) {
     </div>
   `
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      from: 'TitanLeap <payments@mail.titanleap.co>',
-      to: ['tazrt37@gmail.com'],
+  try {
+    await getTransport().sendMail({
+      from: `TitanLeap Payments <${user}>`,
+      to: 'tazrt37@gmail.com',
       subject: `💰 New client: ${name || email} — ${planName} (${processorLabel})`,
       html,
-    }),
-  })
-  if (!res.ok) console.error('[webhook] Resend error:', await res.text())
+    })
+    console.log('[webhook] email sent')
+  } catch (err) {
+    console.error('[webhook] email error:', err.message)
+  }
 }
 
 // ── Stripe ────────────────────────────────────────────────────────────────────
@@ -71,15 +83,15 @@ async function handleStripe(req, body) {
     return new Response('Invalid Stripe signature', { status: 400 })
   }
 
-  if (event.type === 'checkout.session.completed' || event.type === 'payment_intent.succeeded') {
+  if (event.type === 'checkout.session.completed') {
     const obj = event.data.object
     const meta = obj.metadata || {}
-    const email = obj.customer_details?.email || obj.receipt_email || ''
+    const email = obj.customer_details?.email || ''
     const name  = obj.customer_details?.name || ''
     const planName = meta.plan_name || meta.plan || 'Unknown plan'
     const amount = obj.amount_total ? (obj.amount_total / 100).toLocaleString() : '?'
 
-    console.log('[webhook/stripe]', event.type, { email, plan: planName, amount })
+    console.log('[webhook/stripe]', { email, plan: planName, amount })
     await sendEmail({ name, email, planName, amount, processor: 'stripe' })
   }
 
@@ -108,7 +120,7 @@ async function handlePaystack(req, body) {
       ? `${d.customer.first_name} ${d.customer.last_name || ''}`.trim()
       : email
 
-    console.log('[webhook/paystack] charge.success', { email, plan: planName, amount })
+    console.log('[webhook/paystack]', { email, plan: planName, amount })
     await sendEmail({ name, email, planName, amount, processor: 'paystack' })
   }
 
@@ -119,4 +131,5 @@ async function handlePaystack(req, body) {
 export async function POST(req) {
   const body = await req.text()
   const isStripe = !!req.headers.get('stripe-signature')
-  return isStripe ? handleStripe(req, body) : handlePaystack(req, bod
+  return isStripe ? handleStripe(req, body) : handlePaystack(req, body)
+}
