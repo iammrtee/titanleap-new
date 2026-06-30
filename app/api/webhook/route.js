@@ -49,7 +49,7 @@ async function sendEmail({ name, email, planName, amount, processor }) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
     body: JSON.stringify({
-      from: 'TitanLeap <payments@titanleap.co>',
+      from: 'TitanLeap <payments@mail.titanleap.co>',
       to: ['tazrt37@gmail.com'],
       subject: `💰 New client: ${name || email} — ${planName} (${processorLabel})`,
       html,
@@ -119,5 +119,4 @@ async function handlePaystack(req, body) {
 export async function POST(req) {
   const body = await req.text()
   const isStripe = !!req.headers.get('stripe-signature')
-  return isStripe ? handleStripe(req, body) : handlePaystack(req, body)
-}
+  return isStripe ? handleStripe(req, body) : handlePaystack(req, bod
