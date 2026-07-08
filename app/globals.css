@@ -2063,3 +2063,98 @@ html.light .diag-ai-badge { background:rgba(107,33,182,.08); border-color:rgba(1
 html.light .diag-success-h { color:#0F0720; }
 html.light .diag-success-p { color:rgba(60,20,120,.6); }
 html.light .diag-success-p strong { color:#0F0720; }
+
+
+/* ── diag modal — mobile ── */
+@media (max-width:680px) {
+  .audit-overlay { padding:0; align-items:flex-end; }
+
+  .diag-shell {
+    max-width:100%; border-radius:20px 20px 0 0;
+    height:92vh; flex-direction:column;
+    transform:translateY(40px) scale(1);
+  }
+  .audit-overlay.open .diag-shell { transform:translateY(0) scale(1); }
+
+  /* Sidebar becomes compact top bar */
+  .diag-sidebar {
+    width:100%; flex-shrink:0;
+    border-right:none;
+    border-bottom:1px solid var(--borderfaint);
+    padding:14px 18px;
+    flex-direction:row; align-items:center; gap:12px;
+  }
+  .diag-sidebar::before { height:120px; }
+
+  .diag-brand { margin-bottom:0; }
+  .diag-brand-mark { width:30px; height:30px; border-radius:8px; }
+  .diag-brand-name { font-size:12px; }
+  .diag-brand-sub { display:none; }
+
+  /* Steps become horizontal mini-indicators */
+  .diag-steps {
+    display:flex; flex-direction:row; gap:6px;
+    margin:0 0 0 auto; align-items:center;
+  }
+  .diag-step { flex-direction:row; gap:6px; padding:0; }
+  .diag-step-line { display:none; }
+  .diag-step-num { width:22px; height:22px; font-size:10px; flex-shrink:0; }
+  .diag-step-label { display:none; }
+  .diag-step.active .diag-step-label {
+    display:block; font-size:10px;
+    white-space:nowrap; color:var(--white);
+  }
+
+  .diag-sidebar-leaks,
+  .diag-sidebar-footer { display:none; }
+
+  /* Main panel fills rest of height */
+  .diag-main {
+    flex:1; overflow-y:auto; padding:22px 20px 24px;
+    height:0; /* forces flex child to scroll */
+  }
+  .diag-main::before { height:160px; }
+
+  /* Heading */
+  .diag-phase-head {
+    font-size:clamp(26px,6.5vw,34px) !important;
+    letter-spacing:-1.5px !important;
+    line-height:1.08 !important;
+    margin-bottom:8px !important;
+  }
+  .diag-phase-sub {
+    font-size:13px !important;
+    margin-bottom:22px !important;
+  }
+
+  /* Step counter badge */
+  .diag-step-badge { font-size:9px; }
+
+  /* URL input */
+  .diag-url-wrap { flex-direction:column; gap:8px; }
+  .diag-url-input { font-size:14px; padding:14px 16px; }
+  .diag-scan-btn { width:100%; padding:14px; font-size:13px; }
+
+  /* Radio & option grids → single column */
+  .diag-radio-grid { grid-template-columns:1fr !important; }
+  .diag-options-grid { grid-template-columns:1fr !important; }
+
+  /* Contact form */
+  .diag-contact-grid { grid-template-columns:1fr !important; }
+
+  /* Nav row */
+  .diag-nav-row { padding:14px 20px; gap:10px; }
+  .diag-next { font-size:13px; padding:12px 20px; }
+
+  /* Close button */
+  .diag-close { top:12px; right:12px; }
+
+  /* Success */
+  .diag-success-inner { padding:28px 20px; }
+  .diag-success-h { font-size:clamp(22px,5.5vw,30px) !important; }
+}
+
+@media (max-width:380px) {
+  .diag-phase-head { font-size:24px !important; }
+  .diag-main { padding:18px 16px 20px; }
+}
