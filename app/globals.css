@@ -2152,10 +2152,30 @@ html.light .diag-success-p strong { color:#0F0720; }
   }
   .diag-step-badge { font-size:9px !important; letter-spacing:.1em !important; }
 
-  /* URL input + button stack vertically */
-  .diag-url-wrap { flex-direction:column !important; gap:8px !important; }
-  .diag-url-input { font-size:14px !important; padding:14px 16px !important; }
-  .diag-scan-btn { width:100% !important; padding:14px !important; font-size:13px !important; }
+  /* URL box — stack input above scan button */
+  .diag-url-box {
+    flex-direction:column !important;
+    align-items:stretch !important;
+    padding:0 !important;
+    gap:0 !important;
+    border-radius:12px !important;
+    overflow:hidden !important;
+  }
+  .diag-url-box > .diag-url-icon { display:none !important; }
+  .diag-url-input {
+    width:100% !important;
+    font-size:15px !important;
+    padding:14px 16px !important;
+    border-bottom:1px solid var(--borderfaint) !important;
+  }
+  .diag-scan-btn {
+    width:100% !important;
+    min-width:0 !important;
+    border-radius:0 0 10px 10px !important;
+    height:48px !important;
+    font-size:14px !important;
+    padding:0 !important;
+  }
 
   /* Single column grids */
   .diag-radio-grid { grid-template-columns:1fr !important; }
