@@ -15,15 +15,15 @@ export default function Hero({ onAudit }) {
     <section className="hero">
       <div className="orb orb1" /><div className="orb orb2" /><div className="orb orb3" />
       <div className="hero-left">
-        <div className="hero-eyebrow"><span className="dot" />Built by founders, for founders</div>
-        <h1 className="hero-h1">We build the<br /><em>growth system</em><br />your SaaS is <span className="ghost">missing.</span></h1>
-        <p className="hero-p">TitanLeap is a <strong>done-for-you growth partner</strong> — not another agency selling campaigns. We design the funnel, automate your lead flow, and build the content engine that turns your SaaS into a system that compounds, month after month.</p>
+        <div className="hero-eyebrow"><span className="dot" />Most SaaS founders leak $4k–$15k/mo without knowing it</div>
+        <h1 className="hero-h1">We find your<br /><em>revenue leaks</em><br />and fix <span className="ghost">them.</span></h1>
+        <p className="hero-p">Paste your URL. Our AI scans your funnel, traffic, and conversion gaps in minutes — then our team delivers <strong>three ranked revenue leaks with dollar-range impact</strong>, free, in 5 hours. No pitch. No fluff.</p>
         <div className="hero-actions">
-          <a href="#" className="btn-primary" onClick={e=>{e.preventDefault();onAudit()}}>Apply for Free Audit <span>→</span></a>
+          <a href="#" className="btn-primary" onClick={e=>{e.preventDefault();onAudit()}}>Find My Revenue Leaks <span>→</span></a>
           <a href="#process" className="btn-ghost">See how it works ↓</a>
         </div>
         <div className="hero-trust">
-          <div className="trust-text"><strong>Founder-led.</strong> Built on proven growth frameworks.<br />Every engagement starts with a hands-on audit — not a template.</div>
+          <div className="trust-text"><strong>Free. No credit card. Delivered in 5 hours.</strong><br />We've found an average of $7,400/mo in leaks per audit.</div>
         </div>
       </div>
       <div className="hero-right">
