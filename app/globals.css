@@ -2098,13 +2098,12 @@ html.light .diag-success-p strong { color:#0F0720; }
   }
   .diag-sidebar::before { height:80px; }
 
-  /* Brand stays left */
   .diag-brand { margin-bottom:0 !important; flex-shrink:0; }
   .diag-brand-mark { width:28px !important; height:28px !important; border-radius:7px !important; }
   .diag-brand-name { font-size:11px !important; }
   .diag-brand-sub { display:none !important; }
 
-  /* Steps: horizontal dots only */
+  /* Steps → dots in top bar */
   .diag-steps {
     display:flex !important;
     flex-direction:row !important;
@@ -2112,47 +2111,35 @@ html.light .diag-success-p strong { color:#0F0720; }
     margin:0 0 0 auto !important;
     align-items:center !important;
   }
-  .diag-step {
-    flex-direction:row !important;
-    gap:4px !important;
-    padding:0 !important;
-    align-items:center !important;
-  }
+  .diag-step { flex-direction:row !important; gap:4px !important; padding:0 !important; align-items:center !important; }
   .diag-step-line { display:none !important; }
-  .diag-step-num {
-    width:20px !important;
-    height:20px !important;
-    font-size:9px !important;
-    flex-shrink:0 !important;
-  }
+  .diag-step-num { width:20px !important; height:20px !important; font-size:9px !important; flex-shrink:0 !important; }
   .diag-step-label { display:none !important; }
+  .diag-sidebar-leaks, .diag-sidebar-footer { display:none !important; }
 
-  /* Hide sidebar extras */
-  .diag-sidebar-leaks,
-  .diag-sidebar-footer { display:none !important; }
-
-  /* Main panel: fills remaining height, scrollable */
+  /* Main: scrollable fill */
   .diag-main {
     flex:1 !important;
     overflow-y:auto !important;
-    padding:20px 18px 80px !important;
-    height:0 !important; /* forces scroll within flex child */
+    padding:22px 18px 100px !important;
+    height:0 !important;
   }
 
-  /* Phase heading */
-  .diag-phase-head {
-    font-size:28px !important;
+  /* Screen heading & sub */
+  .diag-screen-h {
+    font-size:26px !important;
     letter-spacing:-1px !important;
     line-height:1.1 !important;
     margin-bottom:8px !important;
   }
-  .diag-phase-sub {
+  .diag-screen-sub {
     font-size:13px !important;
+    line-height:1.55 !important;
     margin-bottom:20px !important;
   }
-  .diag-step-badge { font-size:9px !important; letter-spacing:.1em !important; }
+  .diag-screen-tag { font-size:9px !important; margin-bottom:10px !important; }
 
-  /* URL box — stack input above scan button */
+  /* URL box: stack vertically */
   .diag-url-box {
     flex-direction:column !important;
     align-items:stretch !important;
@@ -2177,30 +2164,49 @@ html.light .diag-success-p strong { color:#0F0720; }
     padding:0 !important;
   }
 
-  /* Single column grids */
-  .diag-radio-grid { grid-template-columns:1fr !important; }
-  .diag-options-grid { grid-template-columns:1fr !important; }
-  .diag-contact-grid { grid-template-columns:1fr !important; }
+  /* Name/email: single column */
+  .diag-form-row {
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+    margin-bottom:18px !important;
+  }
 
-  /* Nav row */
+  /* Option grid: single column */
+  .diag-option-grid { grid-template-columns:1fr !important; gap:6px !important; }
+  .diag-option-card { padding:12px 14px !important; }
+  .diag-option-icon { font-size:16px !important; }
+  .diag-option-title { font-size:13px !important; }
+  .diag-option-sub { font-size:11px !important; }
+  .diag-form-section { margin-bottom:20px !important; }
+
+  /* Generate / submit button */
+  .diag-generate {
+    width:100% !important;
+    font-size:14px !important;
+    padding:15px !important;
+  }
+
+  /* Nav row: sticky at bottom */
   .diag-nav-row {
     padding:12px 18px !important;
     position:sticky !important;
     bottom:0 !important;
     background:var(--p900) !important;
     border-top:1px solid var(--borderfaint) !important;
+    z-index:10 !important;
   }
-  .diag-next { font-size:13px !important; padding:12px 20px !important; }
+  .diag-next, .diag-back { font-size:13px !important; }
 
   /* Close button */
   .diag-close { top:10px !important; right:10px !important; }
 
-  /* Success screen */
-  .diag-success-inner { padding:24px 18px !important; }
-  .diag-success-h { font-size:26px !important; }
+  /* Success */
+  .diag-success-inner { padding:28px 20px !important; }
+  .diag-success-h { font-size:24px !important; }
+  .diag-success-p { font-size:14px !important; }
 }
 
 @media (max-width:380px) {
-  .diag-phase-head { font-size:24px !important; }
-  .diag-main { padding:16px 14px 80px !important; }
+  .diag-screen-h { font-size:22px !important; }
+  .diag-main { padding:18px 14px 100px !important; }
 }
