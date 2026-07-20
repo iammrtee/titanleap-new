@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Loader from '../components/Loader'
 import Nav from '../components/Nav'
 import Hero from '../components/Hero'
 import Marquee from '../components/Marquee'
@@ -21,6 +20,9 @@ export default function Home() {
   const [auditOpen, setAuditOpen] = useState(false)
 
   useEffect(() => {
+    // Mark site ready immediately (no loader)
+    document.body.classList.add('site-ready')
+
     // Custom cursor — only on real pointer (mouse) devices, not touch
     const isPointerFine = window.matchMedia('(pointer: fine)').matches
     let cleanupCursor = () => {}
@@ -76,7 +78,6 @@ export default function Home() {
 
   return (
     <>
-      <Loader />
       <Nav onAudit={() => setAuditOpen(true)} />
       <Hero onAudit={() => setAuditOpen(true)} />
       <Marquee />
