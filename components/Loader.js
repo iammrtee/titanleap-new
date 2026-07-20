@@ -38,17 +38,14 @@ export default function Loader() {
       })
     }
 
-    // canplaythrough = enough data buffered to play without stalling
+    // Start playing as soon as any data is available
+    video.addEventListener('canplay', tryPlay, { once: true })
     video.addEventListener('canplaythrough', tryPlay, { once: true })
-    // canplay fires earlier — only use it if we already have enough data (readyState 3+)
-    video.addEventListener('canplay', () => {
-      if (video.readyState >= 3) tryPlay()
-    }, { once: true })
     video.addEventListener('ended', finish)
     video.addEventListener('error', finish)
 
-    // Safety net: never block the site for more than 10s
-    const bailout = setTimeout(finish, 10000)
+    // Hard cap: never block the site for more than 1s
+    const bailout = setTimeout(finish, 1000)
 
     return () => {
       clearTimeout(bailout)
