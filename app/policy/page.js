@@ -17,12 +17,12 @@ export default function PolicyPage() {
         <div className="policy-updated">Last updated: September 21, 2026 — Effective for all users of titanleap.co</div>
 
         <div className="policy-lead">
-          TitanLeap (&ldquo;TitanLeap,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; &ldquo;our&rdquo;) is a growth agency operated from Lagos, Nigeria, serving clients globally. This policy explains what information we collect when you visit our website, request a Revenue Leak Audit, purchase a service, or become a client — and what we do, and don&apos;t do, with it. We&apos;ve tried to write this in plain English rather than legal filler.
+          TitanLeap (&ldquo;TitanLeap,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; &ldquo;our&rdquo;) is a growth agency serving clients globally. This policy explains what information we collect when you visit our website, request a Revenue Leak Audit, purchase a service, or become a client — and what we do, and don&apos;t do, with it. We&apos;ve tried to write this in plain English rather than legal filler.
         </div>
 
         <h2><span className="num">01</span>Who we are</h2>
         <p>TitanLeap is a done-for-you growth agency. We audit businesses&apos; marketing and sales funnels, produce strategy blueprints, and — for retainer clients — run ongoing content, funnel, and sales-pipeline work using our internal software, &ldquo;Growth OS,&rdquo; and select third-party tools listed below.</p>
-        <p>We are based in Lagos, Nigeria. We serve clients primarily in the United States, United Kingdom, Canada, and other English-speaking markets, so this policy is written to be consistent with the general principles of the GDPR (EU/UK), CCPA (California), and Nigeria&apos;s own Data Protection Act (NDPA) — even in jurisdictions where none of these strictly apply to us.</p>
+        <p>We serve clients primarily in the United States, United Kingdom, Canada, and other English-speaking markets, so this policy is written to be consistent with the general principles of the GDPR (EU/UK) and CCPA (California) — even in jurisdictions where none of these strictly apply to us.</p>
 
         <h2><span className="num">02</span>Information we collect</h2>
 
@@ -107,7 +107,7 @@ export default function PolicyPage() {
         </ul>
 
         <h2><span className="num">09</span>International data transfers</h2>
-        <p>Because we operate from Nigeria and use US/EU-based service providers (Google, Gumroad, Stripe, Supabase, Anthropic, Vercel), your information will typically be processed outside your home country. Each provider we use maintains its own security certifications and safeguards for cross-border data transfer.</p>
+        <p>Because we use US/EU-based service providers (Google, Gumroad, Stripe, Supabase, Anthropic, Vercel), your information will typically be processed outside your home country. Each provider we use maintains its own security certifications and safeguards for cross-border data transfer.</p>
 
         <h2><span className="num">10</span>Children&apos;s privacy</h2>
         <p>TitanLeap&apos;s services are intended for businesses and business owners. We do not knowingly collect information from anyone under 18. If you believe a minor has submitted information to us, contact us and we&apos;ll remove it.</p>
@@ -119,7 +119,6 @@ export default function PolicyPage() {
         <div className="policy-contact-box">
           <div className="row"><div className="k">Business</div><div className="v">TitanLeap</div></div>
           <div className="row"><div className="k">Email</div><div className="v"><a href="mailto:hello@titanleap.co">hello@titanleap.co</a></div></div>
-          <div className="row"><div className="k">Based in</div><div className="v">Lagos, Nigeria</div></div>
           <div className="row"><div className="k">Website</div><div className="v"><a href="https://titanleap.co">titanleap.co</a></div></div>
         </div>
       </div>
