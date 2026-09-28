@@ -17,7 +17,7 @@ export default function PolicyPage() {
         <div className="policy-updated">Last updated: September 21, 2026 — Effective for all users of titanleap.co</div>
 
         <div className="policy-lead">
-          TitanLeap (&ldquo;TitanLeap,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; &ldquo;our&rdquo;) is a growth agency serving clients globally. This policy explains what information we collect when you visit our website, request a Revenue Leak Audit, purchase a service, or become a client — and what we do, and don&apos;t do, with it. We&apos;ve tried to write this in plain English rather than legal filler.
+          TitanLeap (&ldquo;TitanLeap,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; &ldquo;our&rdquo;) is a growth agency serving clients globally. This policy explains what information we collect when you visit our website, request a Customer Leak Audit, purchase a service, or become a client — and what we do, and don&apos;t do, with it. We&apos;ve tried to write this in plain English rather than legal filler.
         </div>
 
         <h2><span className="num">01</span>Who we are</h2>
@@ -32,7 +32,7 @@ export default function PolicyPage() {
           <li>We do not use invasive tracking or sell this data to third parties. We do not currently run retargeting pixels (Facebook Pixel, Google Ads tag) — if that changes, this policy will be updated and the change will be dated above.</li>
         </ul>
 
-        <h3>b) When you request a Revenue Leak Audit or fill out our intake form</h3>
+        <h3>b) When you request a Customer Leak Audit or fill out our intake form</h3>
         <p>Our intake form asks for information about your business so we can produce an audit. This includes:</p>
         <ul>
           <li><strong>Contact details:</strong> name, email address, and your business/website URL.</li>
@@ -131,7 +131,7 @@ export default function PolicyPage() {
         .policy-page{background:var(--p900);color:var(--white);font-family:'Archivo',sans-serif;line-height:1.7;min-height:100vh;}
         .policy-page a{color:var(--gold);text-decoration:none;}
         .policy-page a:hover{text-decoration:underline;}
-        .policy-topbar{position:sticky;top:0;z-index:20;background:rgba(8,3,20,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--borderfaint);padding:18px 6vw;display:flex;align-items:center;justify-content:space-between;}
+        .policy-topbar{position:sticky;top:0;z-index:20;background:var(--topbar);backdrop-filter:blur(14px);border-bottom:1px solid var(--borderfaint);padding:18px 6vw;display:flex;align-items:center;justify-content:space-between;}
         .policy-logo{font-size:18px;font-weight:800;letter-spacing:-.3px;color:var(--white)!important;text-decoration:none!important;}
         .policy-logo em{font-style:normal;color:var(--gold);}
         .policy-back{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)!important;}
@@ -140,20 +140,20 @@ export default function PolicyPage() {
         .policy-pill{display:inline-flex;align-items:center;gap:8px;background:var(--goldfaint);border:1px solid var(--goldtrim);padding:7px 15px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
         .policy-wrap h1{font-size:clamp(36px,5vw,54px);font-weight:900;line-height:1;letter-spacing:-1.5px;margin-bottom:16px;}
         .policy-updated{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);margin-bottom:48px;}
-        .policy-lead{font-size:17px;color:rgba(240,234,255,.85);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid var(--borderfaint);}
+        .policy-lead{font-size:17px;color:var(--ink2);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid var(--borderfaint);}
         .policy-wrap h2{font-size:24px;font-weight:900;letter-spacing:-.5px;color:var(--white);margin:48px 0 18px;padding-top:8px;}
         .policy-wrap h2 .num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:.1em;margin-right:10px;}
         .policy-wrap h3{font-size:15px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;margin:26px 0 10px;}
-        .policy-wrap p{font-size:15.5px;color:rgba(240,234,255,.82);margin-bottom:16px;}
+        .policy-wrap p{font-size:15.5px;color:var(--ink2);margin-bottom:16px;}
         .policy-wrap p strong{color:var(--white);font-weight:700;}
         .policy-wrap ul{margin:0 0 16px 0;padding-left:0;list-style:none;}
-        .policy-wrap li{font-size:15.5px;color:rgba(240,234,255,.82);margin-bottom:10px;padding-left:22px;position:relative;}
+        .policy-wrap li{font-size:15.5px;color:var(--ink2);margin-bottom:10px;padding-left:22px;position:relative;}
         .policy-wrap li::before{content:"—";position:absolute;left:0;color:var(--gold);}
         .policy-wrap li strong{color:var(--white);font-weight:700;}
         .policy-table-wrap{overflow-x:auto;}
         .policy-wrap table{width:100%;border-collapse:collapse;margin:20px 0 28px;font-size:14px;min-width:520px;}
         .policy-wrap th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);text-align:left;padding:10px 14px;border-bottom:1px solid var(--goldtrim);background:var(--goldfaint);}
-        .policy-wrap td{padding:12px 14px;border-bottom:1px solid var(--borderfaint);color:rgba(240,234,255,.82);vertical-align:top;}
+        .policy-wrap td{padding:12px 14px;border-bottom:1px solid var(--borderfaint);color:var(--ink2);vertical-align:top;}
         .policy-wrap tr:last-child td{border-bottom:none;}
         .policy-callout{background:var(--p800);border:1px solid var(--borderfaint);border-left:3px solid var(--gold);border-radius:4px;padding:20px 24px;margin:24px 0;}
         .policy-callout p{margin-bottom:0;font-size:14.5px;}
