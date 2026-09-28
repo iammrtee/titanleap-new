@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Terms of Service — TitanLeap',
-  description: 'The terms that govern use of titanleap.co, our Revenue Leak Audits, Growth OS retainer engagements, and payments.',
+  description: 'The terms that govern use of titanleap.co, our Customer Leak Audits, Growth OS retainer engagements, and payments.',
 }
 
 export default function TermsPage() {
@@ -26,7 +26,7 @@ export default function TermsPage() {
         <h2><span className="num">02</span>Our services</h2>
         <p>We offer three broad categories of service, and these Terms apply to all of them:</p>
         <ul>
-          <li><strong>Revenue Leak Audit:</strong> a one-time diagnostic of your marketing and sales funnel, delivered as a written report and 90-day blueprint.</li>
+          <li><strong>Customer Leak Audit:</strong> a one-time diagnostic of your marketing and sales funnel, delivered as a written report and 90-day blueprint.</li>
           <li><strong>One-time deliverables:</strong> individual pieces of strategy, content, or funnel work purchased outside of a retainer.</li>
           <li><strong>Retainer engagements:</strong> ongoing content, funnel, and sales-pipeline work, governed by a separate service agreement that supplements these Terms.</li>
         </ul>
@@ -86,7 +86,7 @@ export default function TermsPage() {
         .policy-page{background:var(--p900);color:var(--white);font-family:'Archivo',sans-serif;line-height:1.7;min-height:100vh;}
         .policy-page a{color:var(--gold);text-decoration:none;}
         .policy-page a:hover{text-decoration:underline;}
-        .policy-topbar{position:sticky;top:0;z-index:20;background:rgba(8,3,20,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--borderfaint);padding:18px 6vw;display:flex;align-items:center;justify-content:space-between;}
+        .policy-topbar{position:sticky;top:0;z-index:20;background:var(--topbar);backdrop-filter:blur(14px);border-bottom:1px solid var(--borderfaint);padding:18px 6vw;display:flex;align-items:center;justify-content:space-between;}
         .policy-logo{font-size:18px;font-weight:800;letter-spacing:-.3px;color:var(--white)!important;text-decoration:none!important;}
         .policy-logo em{font-style:normal;color:var(--gold);}
         .policy-back{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)!important;}
@@ -95,14 +95,14 @@ export default function TermsPage() {
         .policy-pill{display:inline-flex;align-items:center;gap:8px;background:var(--goldfaint);border:1px solid var(--goldtrim);padding:7px 15px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
         .policy-wrap h1{font-size:clamp(36px,5vw,54px);font-weight:900;line-height:1;letter-spacing:-1.5px;margin-bottom:16px;}
         .policy-updated{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);margin-bottom:48px;}
-        .policy-lead{font-size:17px;color:rgba(240,234,255,.85);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid var(--borderfaint);}
+        .policy-lead{font-size:17px;color:var(--ink2);margin-bottom:56px;padding-bottom:40px;border-bottom:1px solid var(--borderfaint);}
         .policy-wrap h2{font-size:24px;font-weight:900;letter-spacing:-.5px;color:var(--white);margin:48px 0 18px;padding-top:8px;}
         .policy-wrap h2 .num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:.1em;margin-right:10px;}
         .policy-wrap h3{font-size:15px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;margin:26px 0 10px;}
-        .policy-wrap p{font-size:15.5px;color:rgba(240,234,255,.82);margin-bottom:16px;}
+        .policy-wrap p{font-size:15.5px;color:var(--ink2);margin-bottom:16px;}
         .policy-wrap p strong{color:var(--white);font-weight:700;}
         .policy-wrap ul{margin:0 0 16px 0;padding-left:0;list-style:none;}
-        .policy-wrap li{font-size:15.5px;color:rgba(240,234,255,.82);margin-bottom:10px;padding-left:22px;position:relative;}
+        .policy-wrap li{font-size:15.5px;color:var(--ink2);margin-bottom:10px;padding-left:22px;position:relative;}
         .policy-wrap li::before{content:"—";position:absolute;left:0;color:var(--gold);}
         .policy-wrap li strong{color:var(--white);font-weight:700;}
         .policy-callout{background:var(--p800);border:1px solid var(--borderfaint);border-left:3px solid var(--gold);border-radius:4px;padding:20px 24px;margin:24px 0;}
