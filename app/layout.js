@@ -3,8 +3,11 @@ import { ThemeProvider } from '../components/ThemeContext'
 import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
-  title: 'TitanLeap — Done-For-You Growth Systems',
-  description: 'Audit-first, done-for-you growth partner for SaaS founders. We build the funnel, automate lead flow, and scale your MRR.',
+  metadataBase: new URL('https://titanleap.co'),
+  title: 'TitanLeap — Get more customers from the traffic you already have',
+  description: 'We find where your SaaS is losing customers and show you exactly what to fix. Free first look within 24 hours.',
+  openGraph: { siteName: 'TitanLeap', type: 'website', images: [{ url: '/og-home.png', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', images: ['/og-home.png'] },
   keywords: 'SaaS growth, growth agency, funnel optimization, AI automation, revenue growth',
 }
 
