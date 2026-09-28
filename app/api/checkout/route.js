@@ -6,7 +6,7 @@ const PLAN_DETAILS = {
   starter:   { name: 'Launch Accelerator',   monthly: 1500, annual: 1200  },
   growth:    { name: 'Scaling System',        monthly: 3500, annual: 2800  },
   authority: { name: 'Authority Domination',  monthly: 6999, annual: 5599  },
-  audit:     { name: 'Revenue Leak Audit',    once: 297                    },
+  audit:     { name: 'Customer Leak Audit',    once: 297                    },
   sprint:    { name: 'Growth System Sprint',  once: 2500                   },
 }
 
