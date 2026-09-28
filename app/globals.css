@@ -2210,3 +2210,15 @@ html.light .diag-success-p strong { color:#0F0720; }
   .diag-screen-h { font-size:22px !important; }
   .diag-main { padding:18px 14px 100px !important; }
 }
+
+/* ── Light mode palette (default). Subpages use these variables, so remapping them
+   here switches Privacy, Terms and Checkout to light without touching their layout. ── */
+html.light{
+  --p900:#F7F3FF; --p850:#FFFFFF; --p800:#FFFFFF; --p700:#EFE6FF; --p600:#E3D9F7;
+  --white:#190D3E; --ink2:#46396B; --muted:#65598A; --subtle:#8A80A8;
+  --border:#E3D9F7; --borderfaint:#E3D9F7;
+  --gold:#6B21E8; --goldfaint:#EFE6FF; --goldtrim:#D9C8FA;
+  --topbar:rgba(247,243,255,.9);
+}
+html:not(.light){ --ink2:rgba(240,234,255,.82); --topbar:rgba(8,3,20,.88); }
+html.light body{ background:#F7F3FF; color:#190D3E; }
