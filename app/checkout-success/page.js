@@ -6,7 +6,7 @@ const PLAN_NAMES = {
   starter: 'Launch Accelerator',
   growth: 'Scaling System',
   authority: 'Authority Domination',
-  audit: 'Revenue Leak Audit',
+  audit: 'Customer Leak Audit',
   sprint: 'Growth System Sprint',
 }
 
