@@ -212,7 +212,7 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 .rxb-stage{display:block;position:relative;height:620px;text-decoration:none;color:inherit}
 .rxb-fade{position:absolute;inset:-40px -40px 0 -40px;padding:40px 40px 0;perspective:1800px;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 48%,rgba(0,0,0,.8) 58%,rgba(0,0,0,.5) 68%,rgba(0,0,0,.22) 78%,rgba(0,0,0,.06) 88%,transparent 96%);mask-image:linear-gradient(to bottom,#000 0,#000 48%,rgba(0,0,0,.8) 58%,rgba(0,0,0,.5) 68%,rgba(0,0,0,.22) 78%,rgba(0,0,0,.06) 88%,transparent 96%)}
 .rxb-fade>*{margin:40px}
-.rxb-doc,.rxb-sheet{position:absolute;left:6%;right:4%;top:0;height:640px;border-radius:6px;transform-origin:50% 0;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.rxb-doc,.rxb-sheet{position:absolute;left:6%;right:4%;top:0;height:640px;border-radius:6px;transform-origin:50% 0;transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s}
 .rxb-doc{transform:rotateX(14deg) rotateY(-12deg) rotateZ(2deg);box-shadow:0 50px 90px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);background:var(--paper);overflow:hidden}
 .rxb-sheet{background:#D9CCF5;opacity:.35}
 .rxb-sheet.s1{transform:rotateX(14deg) rotateY(-12deg) rotateZ(5deg) translate(26px,14px)}
@@ -222,10 +222,8 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 .rxb-cta{position:absolute;left:0;right:0;bottom:44px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:0 16px}
 .rxb-copy .rxb-made{font-size:14px;color:var(--on-deep2);opacity:.6;margin-top:14px}
 .rxb-open{display:inline-block;background:var(--gold);color:#190D3E;font-weight:800;font-size:15px;padding:12px 20px;border-radius:99px;box-shadow:0 10px 24px -8px rgba(0,0,0,.5);white-space:nowrap;transition:transform .2s}
-.rxb-stage:hover .rxb-doc{transform:rotateX(9deg) rotateY(-9deg) rotateZ(-1.5deg) translateY(-10px)}
+.rxb-stage:hover .rxb-doc{transform:rotateX(4deg) rotateY(-4deg) rotateZ(.5deg) translateY(-12px) scale(1.015);box-shadow:0 70px 110px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.08)}
 .rxb-stage:hover .rxb-open{transform:scale(1.05)}
-.rxb-stage:hover .rxb-sheet.s1{transform:rotateX(9deg) rotateY(-9deg) rotateZ(6deg) translate(34px,6px)}
-.rxb-stage:hover .rxb-sheet.s2{transform:rotateX(9deg) rotateY(-9deg) rotateZ(10deg) translate(64px,14px)}
 @media(prefers-reduced-motion:reduce){.rxb-doc,.rxb-sheet{transition:none}}
 @media(max-width:900px){
   .rxb{padding:80px 0 32px}
