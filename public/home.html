@@ -203,7 +203,7 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 .rxb-kicker{font-family:var(--hand);color:var(--gold);font-size:26px;font-weight:700;display:inline-block;transform:rotate(-2deg)}
 .rxb h2{color:#fff;font-size:clamp(34px,4.2vw,52px);margin:6px 0 16px}
 .rxb-copy>p{color:var(--on-deep2);font-size:18px;max-width:40ch}
-.rxb-facts{list-style:none;display:flex;gap:28px;margin:28px 0 32px;padding:18px 0;border-top:1px solid rgba(240,234,255,.14);border-bottom:1px solid rgba(240,234,255,.14)}
+.rxb-facts{list-style:none;display:flex;gap:28px;margin:32px 0 0;padding:18px 0;border-top:1px solid rgba(240,234,255,.14);border-bottom:1px solid rgba(240,234,255,.14)}
 .rxb-facts li{font-size:14px;color:var(--on-deep2)}
 .rxb-facts b{display:block;font-size:26px;font-weight:900;font-stretch:112%;color:var(--gold);letter-spacing:-.02em;line-height:1.1}
 .rxb .btn span{margin-left:10px;transition:transform .2s}
@@ -219,9 +219,13 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 .rxb-sheet.s2{transform:rotateX(14deg) rotateY(-12deg) rotateZ(8deg) translate(50px,28px);opacity:.25}
 .rxb-clip{position:absolute;inset:0;overflow:hidden}
 .rxb-clip iframe{position:absolute;left:0;top:0;width:1100px;height:1800px;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
-.rxb-open{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);background:var(--gold);color:#190D3E;font-weight:800;font-size:15px;padding:12px 20px;border-radius:99px;box-shadow:0 10px 24px -8px rgba(0,0,0,.5);white-space:nowrap;transition:transform .2s}
-.rxb-stage:hover .rxb-doc{transform:rotateX(6deg) rotateY(-5deg) rotateZ(1deg) translateY(-6px)}
-.rxb-stage:hover .rxb-open{transform:translateX(-50%) scale(1.05)}
+.rxb-cta{position:absolute;left:0;right:0;bottom:44px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:0 16px}
+.rxb-made{font-size:13.5px;color:var(--on-deep2);opacity:.6}
+.rxb-open{display:inline-block;background:var(--gold);color:#190D3E;font-weight:800;font-size:15px;padding:12px 20px;border-radius:99px;box-shadow:0 10px 24px -8px rgba(0,0,0,.5);white-space:nowrap;transition:transform .2s}
+.rxb-stage:hover .rxb-doc{transform:rotateX(9deg) rotateY(-9deg) rotateZ(-1.5deg) translateY(-10px)}
+.rxb-stage:hover .rxb-open{transform:scale(1.05)}
+.rxb-stage:hover .rxb-sheet.s1{transform:rotateX(9deg) rotateY(-9deg) rotateZ(6deg) translate(34px,6px)}
+.rxb-stage:hover .rxb-sheet.s2{transform:rotateX(9deg) rotateY(-9deg) rotateZ(10deg) translate(64px,14px)}
 @media(prefers-reduced-motion:reduce){.rxb-doc,.rxb-sheet{transition:none}}
 @media(max-width:900px){
   .rxb{padding:80px 0 32px}
@@ -231,7 +235,7 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
   .rxb-doc{transform:rotateX(10deg) rotateY(-8deg) rotateZ(2deg)}
   .rxb-sheet.s1{transform:rotateX(10deg) rotateY(-8deg) rotateZ(4deg) translate(14px,10px)}
   .rxb-sheet.s2{transform:rotateX(10deg) rotateY(-8deg) rotateZ(6deg) translate(28px,20px)}
-  .rxb-open{bottom:80px}
+  .rxb-cta{bottom:20px}
   .rxb-facts{gap:20px}
 }
 
@@ -492,8 +496,6 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
         <li><b>5 hrs</b>to deliver</li>
         <li><b>90-day</b>plan</li>
       </ul>
-      <a class="btn btn-gold" href="/sample-report/">View the full example report <span aria-hidden="true">&rarr;</span></a>
-      <p class="rxb-note">Relaydesk is a made-up product. Yours follows the same format.</p>
     </div>
     <a class="rxb-stage" href="/sample-report/" aria-label="View the full example report">
       <span class="rxb-fade">
@@ -501,7 +503,7 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
         <span class="rxb-sheet s1" aria-hidden="true"></span>
         <span class="rxb-doc"><span class="rxb-clip"><iframe id="rxFrame" title="Preview of the example Customer Leak Audit" tabindex="-1" loading="lazy" scrolling="no"></iframe></span></span>
       </span>
-      <span class="rxb-open">Open report <span aria-hidden="true">&rarr;</span></span>
+      <span class="rxb-cta"><span class="rxb-open">Open report <span aria-hidden="true">&rarr;</span></span><span class="rxb-made">Relaydesk is a made-up product. Yours follows the same format.</span></span>
     </a>
   </div>
 </section>
