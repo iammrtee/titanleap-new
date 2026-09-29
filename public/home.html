@@ -207,7 +207,13 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 .field+.field{margin-top:28px}
 .fl{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
 .fl label{font-weight:600;font-size:16px}
-.fl output{font-weight:700;color:var(--brand);font-size:17px}
+.fl .num{font:700 17px var(--sans);color:var(--brand);background:transparent;border:0;border-bottom:1.5px dashed color-mix(in srgb,var(--brand) 55%,transparent);border-radius:0;padding:2px 2px 1px;text-align:right;min-width:3ch;cursor:text;transition:background .15s,border-color .15s}
+.fl .num:hover{background:var(--tint);border-bottom-style:solid}
+.fl .num:focus{outline:none;background:var(--paper);border:1.5px solid var(--brand);border-radius:6px;padding:4px 8px;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.tap{font-size:13.5px;color:var(--muted);margin-top:26px}
+.tap i{font-style:normal;color:var(--brand);border-bottom:1.5px dashed var(--brand);font-weight:700}
+.fix{margin-top:10px;font-size:15px;color:var(--on-deep2);border-left:3px solid var(--gold);padding:2px 0 2px 12px}
+.fix b{color:var(--on-deep)}
 .hint{font-size:14px;color:var(--muted);margin-top:6px}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:var(--rule);outline-offset:6px}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--brand);border:3px solid var(--paper);box-shadow:0 0 0 1px var(--brand);cursor:pointer}
@@ -454,32 +460,34 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
 <section id="calculator">
   <div class="wrap">
     <h2>How many customers are walking away?</h2>
-    <p class="lede">Move the sliders to match your numbers. It all runs in your browser, nothing is sent.</p>
+    <p class="lede">Drag the sliders, or tap any number to type your exact figure. It all runs in your browser.</p>
     <div class="calc">
       <div class="calc-in">
         <div class="field">
-          <div class="fl"><label for="v">Visitors a month</label><output id="vo" for="v"></output></div>
+          <div class="fl"><label for="v">Visitors a month</label><input class="num" id="vo" type="text" inputmode="decimal" autocomplete="off" aria-label="Visitors a month, type an exact number"></div>
           <input type="range" id="v" min="500" max="100000" step="500" value="8000">
         </div>
         <div class="field">
-          <div class="fl"><label for="s">Visitors who sign up or start a trial</label><output id="so" for="s"></output></div>
+          <div class="fl"><label for="s">Visitors who sign up or start a trial</label><input class="num" id="so" type="text" inputmode="decimal" autocomplete="off" aria-label="Sign-up rate, percent, type an exact number"></div>
           <input type="range" id="s" min="0.2" max="10" step="0.1" value="1.2">
           <div class="hint">Target we use: 3%</div>
         </div>
         <div class="field">
-          <div class="fl"><label for="p">Trials that become paying customers</label><output id="po" for="p"></output></div>
+          <div class="fl"><label for="p">Trials that become paying customers</label><input class="num" id="po" type="text" inputmode="decimal" autocomplete="off" aria-label="Trial-to-paid rate, percent, type an exact number"></div>
           <input type="range" id="p" min="1" max="60" step="1" value="9">
           <div class="hint">Target we use: 18%</div>
         </div>
         <div class="field">
-          <div class="fl"><label for="a">Revenue per customer a month</label><output id="ao" for="a"></output></div>
-          <input type="range" id="a" min="5" max="1000" step="5" value="49">
+          <div class="fl"><label for="a">Revenue per customer a month</label><input class="num" id="ao" type="text" inputmode="decimal" autocomplete="off" aria-label="Revenue per customer a month, dollars, type an exact number"></div>
+          <input type="range" id="a" min="5" max="1000" step="5" value="15">
         </div>
+        <p class="tap">Know your exact numbers? Tap any <i>purple number</i> above and type it.</p>
       </div>
       <div class="calc-out" aria-live="polite">
         <div class="lbl">Paying customers you're missing every month</div>
         <div class="leak-n"><span id="leak">0</span><small class="unit" id="unit"> customers</small><svg viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden="true"><path d="M2 10 C 50 4, 120 14, 198 6"/></svg></div>
         <p class="per" id="per"></p>
+        <p class="fix" id="fix"></p>
         <div class="rows">
           <div>New customers a month today<b id="now">0</b></div>
           <div>At target rates<b id="tgt">0</b></div>
@@ -741,20 +749,21 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
 // /api/audit emails the lead to hello@titanleap.co with revenue in the subject.
 // Anywhere else (this preview) it only shows the confirmation.
 (function(){
-  var f=document.getElementById('snapForm'),box=document.getElementById('snapshot'),msg=document.getElementById('snapMsg'),btn=f.querySelector('button');
+  var f=document.getElementById('snapForm'),box=document.getElementById('snapshot'),msg=document.getElementById('snapMsg');
   var LIVE=/(^|\.)titanleap\.co$/.test(location.hostname);
   var REV={pre:'Pre-revenue','lt1k':'Under $1k/mo','1k-10k':'$1k–$10k/mo','10k-50k':'$10k–$50k/mo','50k+':'$50k+/mo'};
   function post(url,body){return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(j){if(!r.ok||j.error&&url==='/api/audit/')throw new Error(j.error||r.status);return j;});});}
+  function wire(f,box,msg,btnLabel){var btn=f.querySelector('button');
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    var email=f.email.value.trim(),site=f.website.value.trim();
+    var email=f.email.value.trim(),site=f.website.value.trim(),H=document.getElementById('snapForm');
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){msg.textContent='Enter a valid email so we can send your result.';f.email.focus();return;}
     if(!/\./.test(site)){msg.textContent='Enter your website, for example yoursaas.com.';f.website.focus();return;}
     if(!f.revenue.value){msg.textContent='Choose your monthly revenue range.';f.revenue.focus();return;}
     var done=function(){box.classList.add('done')};
     if(!LIVE){done();return;}
     btn.disabled=true;btn.textContent='Sending…';
-    var calc='Calculator: '+Number(f.visitors.value).toLocaleString('en-US')+' visitors/mo, '+f.signup_rate.value+'% sign up, '+f.paid_rate.value+'% pay, $'+f.arpu.value+'/customer/mo. Est. $'+f.est_leak.value+'/mo missing.';
+    var calc='Calculator: '+Number(H.visitors.value).toLocaleString('en-US')+' visitors/mo, '+H.signup_rate.value+'% sign up, '+H.paid_rate.value+'% pay, $'+H.arpu.value+'/customer/mo. Est. $'+H.est_leak.value+'/mo missing.';
     post('/api/enrich/',{url:site}).catch(function(){return null;}).then(function(scan){
       var ok=scan&&scan.ok;
       return post('/api/audit/',{
@@ -767,10 +776,11 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
         scanData:ok?scan:null
       });
     }).then(done).catch(function(){
-      btn.disabled=false;btn.textContent='Send me my free first look';
+      btn.disabled=false;btn.textContent=btnLabel;
       msg.textContent="That didn't go through. Try again, or email hello@titanleap.co.";
     });
-  });
+  });}
+  wire(f,box,msg,'Send me my free first look');
 })();
 
 
@@ -786,22 +796,50 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
   io.observe(form);io.observe(fin);
 })();
 
-// Leak calculator
+// Leak calculator: sliders plus tap-to-type numbers
 (function(){
   var $=function(id){return document.getElementById(id)},T_SIGNUP=3,T_PAID=18;
-  function money(n){n=Math.round(n);return '$'+(n>=10000?(n/1000).toFixed(1).replace(/\.0$/,'')+'k':n.toLocaleString('en-US'));}
+  var L={v:[1,10000000],s:[0.1,100],p:[0.1,100],a:[1,100000]}; // typed values may go past the slider range
+  var val={v:+$('v').value,s:+$('s').value,p:+$('p').value,a:+$('a').value};
+  function money(n){n=Math.round(n);return '$'+(n>=1e6?(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':n>=10000?(n/1000).toFixed(1).replace(/\.0$/,'')+'k':n.toLocaleString('en-US'));}
+  function trim(n){return String(+n.toFixed(2));}
+  function fmt(k,n){return k==='v'?Math.round(n).toLocaleString('en-US'):k==='a'?'$'+Math.round(n).toLocaleString('en-US'):trim(n)+'%';}
+  function size(el){el.style.width=(el.value.length+1)+'ch';}
+  function show(k){var el=$(k+'o');if(document.activeElement!==el){el.value=fmt(k,val[k]);size(el);}}
+  var FIX={
+    'signup rate':'<b>What usually causes it:</b> visitors can\'t tell what you do in 5 seconds, or the signup asks too much too early.',
+    'trial-to-paid rate':'<b>What usually causes it:</b> people sign up but never reach their first win, and nothing brings them back during the trial.'
+  };
   function calc(){
-    var v=+$('v').value,s=+$('s').value,p=+$('p').value,a=+$('a').value;
-    $('vo').textContent=v.toLocaleString('en-US');$('so').textContent=s.toFixed(1)+'%';$('po').textContent=p+'%';$('ao').textContent='$'+a;
+    var v=val.v,s=val.s,p=val.p,a=val.a;
+    ['v','s','p','a'].forEach(show);
     var now=v*s/100*p/100*a,tgt=v*Math.max(s,T_SIGNUP)/100*Math.max(p,T_PAID)/100*a,leak=Math.max(0,tgt-now);
     var cN=v*s/100*p/100,cT=v*Math.max(s,T_SIGNUP)/100*Math.max(p,T_PAID)/100,miss=Math.max(0,Math.round(cT-cN));
-    $('leak').textContent=miss;$('unit').textContent=miss===1?' customer':' customers';$('now').textContent=Math.round(cN);$('tgt').textContent=Math.round(cT);$('mrr').textContent=money(leak);$('yr').textContent=money(leak*12);
+    $('leak').textContent=miss.toLocaleString('en-US');$('unit').textContent=miss===1?' customer':' customers';$('now').textContent=Math.round(cN).toLocaleString('en-US');$('tgt').textContent=Math.round(cT).toLocaleString('en-US');$('mrr').textContent=money(leak);$('yr').textContent=money(leak*12);
     var worst=(s/T_SIGNUP)<(p/T_PAID)?'signup rate':'trial-to-paid rate';
     $('per').textContent=leak<1?'You\'re at or above our targets. An audit can still find what\'s next.':'Most of it is your '+worst+'. That\'s where we\'d look first.';
+    $('fix').innerHTML=leak<1?'':FIX[worst];$('fix').style.display=leak<1?'none':'';
     var cta=$('calcCta');if(leak<297){cta.textContent='Get a free first look instead';cta.href='#snapshot';}else{cta.textContent='Show me how to win them back, $297';cta.href='https://titanleapagency.gumroad.com/l/fxift';}
-    var F=document.getElementById('snapForm');F.visitors.value=v;F.signup_rate.value=s;F.paid_rate.value=p;F.arpu.value=a;F.est_leak.value=Math.round(leak);
+    var F=$('snapForm');F.visitors.value=Math.round(v);F.signup_rate.value=trim(s);F.paid_rate.value=trim(p);F.arpu.value=Math.round(a);F.est_leak.value=Math.round(leak);
   }
-  ['v','s','p','a'].forEach(function(id){$(id).addEventListener('input',calc)});calc();
+  ['v','s','p','a'].forEach(function(k){
+    var r=$(k),el=$(k+'o');
+    r.addEventListener('input',function(){val[k]=+r.value;calc();});
+    var fresh=false;el.addEventListener('focus',function(){el.value=trim(val[k]);size(el);el.select();fresh=true;});
+    el.addEventListener('mouseup',function(e){if(fresh){e.preventDefault();el.select();fresh=false;}});
+    el.addEventListener('input',function(){
+      el.value=el.value.replace(/[^0-9.,]/g,'');size(el);
+      var n=parseFloat(el.value.replace(/,/g,''));
+      if(n>=L[k][0]&&n<=L[k][1]){val[k]=n;r.value=n;calc();}
+    });
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();el.blur();}if(e.key==='Escape'){el.value=trim(val[k]);el.blur();}});
+    el.addEventListener('blur',function(){
+      var n=parseFloat(el.value.replace(/,/g,''));
+      if(!isNaN(n)){val[k]=Math.min(L[k][1],Math.max(L[k][0],n));r.value=val[k];}
+      calc();
+    });
+  });
+  calc();
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
