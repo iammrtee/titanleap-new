@@ -189,6 +189,16 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 @media(max-width:640px){.hero .n3,.hero .n1,.hero .n2{transform:none}.tally{position:relative;left:auto;bottom:auto;margin:16px 0 0;transform:rotate(-2deg);align-self:flex-start;display:inline-flex}.hero figure{display:flex;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.hero figure{animation:none}.tally{animation:none;opacity:1}.hero .desk,.tally{transition:none}}
 
+/* section distinction: calculator lives on its own tinted, dotted band */
+.hero{padding-bottom:96px}
+#calculator{background:var(--tint);background-image:radial-gradient(rgba(107,33,232,.10) 1px,transparent 1.3px);background-size:22px 22px;border-top:1px solid var(--rule);padding:104px 0 96px;position:relative}
+:root[data-theme="dark"] #calculator{background-image:radial-gradient(rgba(240,234,255,.07) 1px,transparent 1.3px)}
+#calculator::before{content:"";position:absolute;left:0;right:0;top:-1px;height:4px;background:linear-gradient(90deg,var(--brand) 0,var(--brand) 28%,var(--gold) 28%,var(--gold) 34%,transparent 34%)}
+.kick{display:inline-block;font-family:var(--hand);color:var(--brand);font-size:26px;font-weight:700;transform:rotate(-2deg);margin-bottom:2px}
+#calculator .calc,#calculator .snap{box-shadow:0 1px 1px rgba(26,21,48,.05),0 18px 40px -14px rgba(60,20,140,.28)}
+#calculator~.honest{margin-top:0;background:var(--tint);background-image:radial-gradient(rgba(107,33,232,.10) 1px,transparent 1.3px);background-size:22px 22px;border-top:1px solid var(--rule);border-bottom:0;padding:34px 0 38px}
+:root[data-theme="dark"] #calculator~.honest{background-image:radial-gradient(rgba(240,234,255,.07) 1px,transparent 1.3px)}
+@media(max-width:600px){#calculator{padding:76px 0 64px}.hero{padding-bottom:64px}.kick{font-size:24px}}
 /* the ledger (report table) */
 .ledger-unused{margin-top:56px;background:var(--paper);border-radius:4px;box-shadow:var(--paper-shadow)}
 .ledger-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:18px 22px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
@@ -214,7 +224,7 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 }
 
 /* report preview band */
-.rxb{background:var(--deep);color:var(--on-deep);margin-top:88px;padding:104px 0 56px;overflow:hidden;position:relative;background-image:radial-gradient(rgba(240,234,255,.06) 1px,transparent 1.2px);background-size:22px 22px}
+.rxb{background:var(--deep);color:var(--on-deep);margin-top:0;padding:104px 0 56px;overflow:hidden;position:relative;background-image:radial-gradient(rgba(240,234,255,.06) 1px,transparent 1.2px);background-size:22px 22px}
 .rxb-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:center}
 .rxb-kicker{font-family:var(--hand);color:var(--gold);font-size:26px;font-weight:700;display:inline-block;transform:rotate(-2deg)}
 .rxb h2{color:#fff;font-size:clamp(34px,4.2vw,52px);margin:6px 0 16px}
@@ -497,6 +507,7 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
 
 <section id="calculator">
   <div class="wrap">
+    <span class="kick">Count the damage</span>
     <h2>How many customers are walking away?</h2>
     <p class="lede">Drag the sliders, or tap any number to type your exact figure. It all runs in your browser.</p>
     <div class="calc">
