@@ -262,6 +262,15 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
   .rxb-cta{bottom:20px}
   .rxb-facts{gap:20px}
 }
+/* mobile 3D: keep depth on small screens */
+@media(max-width:900px){
+  .rxb-fade{perspective:900px}
+  .rxb-doc{transform:rotateX(18deg) rotateY(-16deg) rotateZ(3deg);box-shadow:0 40px 60px -24px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.08)}
+  .rxb-sheet.s1{transform:rotateX(18deg) rotateY(-16deg) rotateZ(6deg) translate(22px,14px)}
+  .rxb-sheet.s2{transform:rotateX(18deg) rotateY(-16deg) rotateZ(9deg) translate(44px,28px)}
+  .hero figure{perspective:1000px;padding:0 10px}
+  .hero .desk{transform:rotateY(-9deg) rotateX(4deg) rotateZ(-1deg);transform-origin:50% 50%;box-shadow:0 34px 50px -22px rgba(26,10,80,.55)}
+}
 
 /* strip */
 .honest{margin-top:88px;background:var(--tint);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:28px 0}
