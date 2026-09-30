@@ -173,6 +173,20 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 }
 
 
+/* hand-written reveal: plays when the mock scrolls into view, 1 -> 2 -> 3 */
+.hero .desk.draw path{animation:none}
+.hero .desk.draw.go path{animation:draw var(--d,.7s) cubic-bezier(.55,.05,.3,1) forwards}
+.hero .desk.draw .note{opacity:1;animation:none}
+.hero .desk.draw .w{display:inline-block;opacity:0;transform:translateY(4px) rotate(-3deg)}
+.hero .desk.draw.go .w{animation:inkw .3s ease-out forwards}
+.hero .desk.draw .num{opacity:0;scale:.3}
+.hero .desk.draw.go .num{animation:numpop .4s cubic-bezier(.2,.9,.3,1.5) forwards}
+@keyframes inkw{to{opacity:1;transform:none}}
+@keyframes numpop{to{opacity:1;scale:1}}
+.hero .tally{animation:none}
+.hero figure.go .tally{animation:pop .8s cubic-bezier(.2,.9,.3,1.25) 6.3s forwards}
+@media(prefers-reduced-motion:reduce){.hero .desk.draw .w,.hero .desk.draw .num{opacity:1;transform:none;scale:1;animation:none!important}.hero figure .tally{animation:none!important;opacity:1}.hero .desk.draw path{stroke-dashoffset:0;animation:none!important}}
+@media(max-width:640px){.hero .notes-m{display:flex;flex-direction:column}.hero .n1{order:1}.hero .n2{order:2}.hero .n3{order:3}}
 /* hero depth: tilted 3D page, glow, floating tally */
 .hero{overflow-x:clip}
 .hero figure{position:relative;isolation:isolate;perspective:1700px;animation:bob 8s ease-in-out infinite}
@@ -1303,7 +1317,7 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
 // Red-pen markup, positioned on the real elements so it survives resizing
 (function(){
   var desk=document.getElementById('desk'),page=desk.querySelector('.page'),svg=document.getElementById('mk');
-  var NS='http://www.w3.org/2000/svg',drawn=false;
+  var NS='http://www.w3.org/2000/svg',drawn=false,words=false;
   function r(id){var e=document.getElementById(id),x=0,y=0,n=e;while(n&&n!==page){x+=n.offsetLeft;y+=n.offsetTop;n=n.offsetParent;}return{x:x,y:y,w:e.offsetWidth,h:e.offsetHeight,pw:page.offsetWidth};}
   function path(d,delay,cls){var el=document.createElementNS(NS,'path');el.setAttribute('d',d);if(cls)el.setAttribute('class',cls);svg.appendChild(el);var L=el.getTotalLength();el.style.setProperty('--len',L);el.style.animationDelay=delay+'s';return el;}
   function paint(){
@@ -1325,11 +1339,27 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
       path('M'+(b.x+b.w+10)+' '+(b.y+b.h/2)+' Q '+(right-50)+' '+(b.y+b.h/2+20)+' '+(right+8)+' '+(document.querySelector('.n2').offsetTop-off+12),1.7,'con');
       path('M'+(c.x+c.w+10)+' '+(c.y+c.h/2)+' Q '+(right-30)+' '+(c.y-6)+' '+(right+8)+' '+(document.querySelector('.n3').offsetTop-off+12),1.15,'con');
     }
-    var notes=document.querySelectorAll('.note');
-    [.95,1.4,1.95].forEach(function(d,i){notes[i].style.animationDelay=d+'s'});
-    if(drawn){svg.querySelectorAll('path').forEach(function(p){p.style.animation='none';p.style.strokeDashoffset=0});}
+    var ps=svg.querySelectorAll('path'),D=[.5,4.5,2.6,1.2,3.1,5.0],U=[.85,.7,.6,.55,.55,.55];
+    ps.forEach(function(p,i){if(D[i]!=null){p.style.animationDelay=D[i]+'s';p.style.setProperty('--d',U[i]+'s');}});
+    if(!words){words=true;
+      [['n1',1.7],['n2',3.6],['n3',5.5]].forEach(function(o){
+        var n=document.querySelector('.'+o[0]),t=o[1],k=0;
+        n.querySelector('.num').style.animationDelay=t+'s';t+=.25;
+        function wrap(node){Array.prototype.slice.call(node.childNodes).forEach(function(c){
+          if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(s){
+            if(!s)return;if(/^\s+$/.test(s)){f.appendChild(document.createTextNode(' '));return;}
+            var w=document.createElement('span');w.className='w';w.textContent=s;w.style.animationDelay=(t+k*.1).toFixed(2)+'s';k++;f.appendChild(w);});
+            node.replaceChild(f,c);}
+          else if(c.nodeType===1&&!c.classList.contains('num'))wrap(c);});}
+        wrap(n);});
+    }
+    if(drawn&&desk.classList.contains('go')){svg.querySelectorAll('path').forEach(function(p){p.style.animation='none';p.style.strokeDashoffset=0});}
   }
-  function go(){paint();drawn=true;}
+  function go(){paint();drawn=true;
+    var fig=desk.closest('figure'),calm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function start(){desk.classList.add('go');fig.classList.add('go');}
+    if(calm||!('IntersectionObserver' in window)){start();return;}
+    var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();start();}},{threshold:window.innerWidth<=640?.3:.35});io.observe(window.innerWidth<=640?fig:desk);}
   if(document.fonts&&document.fonts.ready){document.fonts.ready.then(go)}else{window.addEventListener('load',go)}
   var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(paint,120)});
 })();
@@ -1341,9 +1371,10 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
   if(!fig||!desk||!tally)return;
   var calm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var A=document.getElementById('tA'),B=document.getElementById('tB');
-  if(!calm){A.textContent='0';B.textContent='0';setTimeout(function(){
+  A.textContent=calm?A.textContent:'0';B.textContent=calm?B.textContent:'0';var started=false;function kick(){if(started)return;started=true;setTimeout(function(){
     var t0=null;function step(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-k,3);A.textContent=Math.round(43*e);B.textContent=Math.round(98*e);if(k<1)requestAnimationFrame(step);}
-    requestAnimationFrame(step);},2500);}
+    requestAnimationFrame(step);},6500);}
+  if(!calm){if('IntersectionObserver' in window){var io2=new IntersectionObserver(function(es){if(es[0].isIntersecting){io2.disconnect();kick();}},{threshold:.35});io2.observe(desk);}else kick();}
   var fine=window.matchMedia('(pointer:fine)').matches;
   if(calm||!fine)return;
   function on(){return window.innerWidth>980}
