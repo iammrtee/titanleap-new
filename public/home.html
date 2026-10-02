@@ -173,6 +173,37 @@ footer .logo{color:#fff}footer .logo span{color:var(--gold)}
 }
 
 
+/* pricing: break-even lines, what-runs strip, growth-OS chips */
+.be{display:inline-block;margin:12px 0 0;padding:7px 12px;border-radius:99px;background:var(--tint);color:var(--brand);font-size:14px;font-weight:700;line-height:1.3}
+.prow .be{margin:8px 0 0;font-size:12.5px;padding:5px 10px}
+.goes{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:28px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);overflow:hidden}
+.goes div{padding:22px 24px;border-right:1px solid var(--rule)}
+.goes div:last-child{border-right:0}
+.goes b{display:block;font-size:30px;font-weight:900;font-stretch:110%;letter-spacing:-.03em;color:var(--brand);line-height:1.1}
+.goes span{display:block;margin-top:6px;font-size:15px;color:var(--ink2);line-height:1.45}
+.goes-k{font-family:var(--hand);color:var(--brand);font-size:24px;font-weight:700;margin:40px 0 0;display:block;transform:rotate(-1.5deg);width:max-content}
+.runs{margin-top:18px;background:var(--deep);color:var(--on-deep);border-radius:12px;padding:26px 28px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,2.1fr);gap:28px;align-items:center;background-image:radial-gradient(rgba(240,234,255,.06) 1px,transparent 1.2px);background-size:22px 22px}
+.runs h4{color:#fff;font-size:20px;font-weight:800;font-stretch:105%;line-height:1.25}
+.runs h4 i{font-style:normal;color:var(--gold)}
+.runs ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
+.runs li{font-size:15px;color:var(--on-deep2);padding-left:24px;position:relative;line-height:1.4}
+.runs li b{color:#fff;font-weight:700}
+.runs li::before{content:"";position:absolute;left:2px;top:6px;width:11px;height:6px;border-left:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg)}
+@media(max-width:900px){.goes{grid-template-columns:1fr}.goes div{border-right:0;border-bottom:1px solid var(--rule)}.goes div:last-child{border-bottom:0}.runs{grid-template-columns:1fr;padding:22px}.runs ul{grid-template-columns:1fr}}
+.dsk{font-size:14px;font-weight:500;color:var(--muted)}
+@media(max-width:900px){.dsk{display:none}}
+.perks{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;margin:4px 0 22px;padding:18px 20px;background:var(--paper);border:1px solid var(--rule);border-radius:10px}
+.perks li{position:relative;padding-left:24px;font-size:15px;color:var(--ink2);line-height:1.45}
+.perks li b{color:var(--ink)}
+.perks li::before{content:"";position:absolute;left:2px;top:7px;width:11px;height:6px;border-left:2px solid var(--ok);border-bottom:2px solid var(--ok);transform:rotate(-45deg)}
+@media(max-width:700px){.perks{grid-template-columns:1fr}}
+.mplans{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.offer.mp .price{margin-top:4px}
+.offer.mp .yr{font-size:14px;color:var(--muted);margin:2px 0 16px}
+.offer.mp .ticks li b{color:var(--ink);font-weight:700}
+.offer.mp.pop{outline:2px solid var(--brand);outline-offset:-2px}
+.gline.mg{margin:20px 0 0}
+@media(max-width:900px){.mplans{grid-template-columns:1fr}}
 /* hand-written reveal: plays when the mock scrolls into view, 1 -> 2 -> 3 */
 .hero .desk.draw path{animation:none}
 .hero .desk.draw.go path{animation:draw var(--d,.7s) cubic-bezier(.55,.05,.3,1) forwards}
@@ -695,11 +726,12 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
         <div class="price">$297 <small>once</small></div>
         <p class="d">Everything you need to turn more of your visitors into paying customers.</p>
         <ul class="stack">
-          <li><b>Your funnel, marked up.</b> Site, signup and pricing page, annotated line by line.</li>
+          <li><b>Your funnel, marked up.</b> Site, signup and pricing page, annotated line by line. We review your email sequence too, if you have one.</li>
           <li><b>Your 3 biggest customer leaks.</b> Ranked, with the exact fix and how long each one takes.</li>
           <li><b>The number that matters.</b> How many customers each fix could win back.</li>
-          <li><b>Where to find more.</b> Your best 1–2 channels for new customers, and the first step for each.</li>
-          <li><b>A 90-day plan.</b> What to do first, second and third.</li>
+          <li><b>Your content, scored.</b> One social profile audited, with what to post instead.</li>
+          <li><b>A competitor teardown.</b> One rival's funnel, and what they do that you don't.</li>
+          <li><b>Where to find more, and a 90-day plan.</b> Your best 1–2 channels for new customers, and what to do first, second and third.</li>
           <li class="bonus"><b>Bonus: 7 days of questions.</b> Reply with anything about your report and Triumph answers.</li>
           <li class="bonus"><b>Bonus: $297 credit.</b> Comes off any Sprint or monthly plan.</li>
         </ul>
@@ -712,35 +744,53 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
         <h3>Growth System Sprint</h3>
         <div class="price">$2,500 <small>once</small></div>
         <p class="d">We build the fixes and set up your first channel for new customers, without a monthly commitment.</p>
-        <ul class="ticks"><li>Positioning and messaging rewritten</li><li>One funnel rebuilt and launched</li><li>Automated follow-up emails</li><li>Yours to keep, no ongoing fees</li><li>Counts toward a monthly plan</li></ul>
+        <ul class="ticks"><li>Live in 14 days. You approve, we write and launch</li><li>Positioning and messaging rewritten</li><li>One funnel rebuilt and launched</li><li>Automated follow-up emails</li><li>30 days of posts written and scheduled for you (LinkedIn, Facebook or Instagram)</li><li>Lead and sale tracking set up, so you see what works</li><li>Yours to keep, no ongoing fees</li><li>Counts toward a monthly plan</li></ul>
+        <div class="gline"><b>Guarantee:</b> if the rebuilt page doesn't beat your old one within 60 days, we keep improving it for free.</div>
         <a href="mailto:hello@titanleap.co?subject=Growth%20System%20Sprint" class="btn btn-plain">Ask about a sprint</a>
       </div>
     </div>
 
     <div class="plans">
       <div class="plans-h">
-        <div><h3 style="font-size:26px">Monthly plans</h3><p>We run your customer acquisition every month: content, funnels and outreach that bring in new customers. No contract, cancel anytime.</p></div>
+        <div><h3 style="font-size:26px">Want us to keep going?</h3><p>We run your customer acquisition every month. No contract, cancel anytime.</p></div>
       </div>
-      <div class="prow head"><div>Plan</div><div>What you get each month</div><div>Monthly</div><div>Paid yearly</div><div></div></div>
-      <div class="prow">
-        <div><h4>Launch Accelerator</h4><div class="for">Get your first customers</div></div>
-        <div class="inc">Positioning and funnel foundation, 5 short videos, 15 graphics, a 5-email nurture sequence</div>
-        <div class="m">$1,500</div><div class="y">$1,200</div>
-        <a href="mailto:hello@titanleap.co?subject=Launch%20Accelerator" class="btn btn-plain">Talk to us</a>
+      <div class="mplans">
+        <div class="offer mp pop">
+          <div class="step-l"><b>Get your first customers</b></div>
+          <h3>Launch Accelerator</h3>
+          <div class="price">$1,500 <small>/ month</small></div>
+          <p class="yr">or $1,200 a month, paid yearly</p>
+          <ul class="ticks">
+            <li><b>Month one starts with a mini-sprint.</b> Your biggest leak fixed and live in 14 days.</li>
+            <li><b>12 short videos a month.</b> 3 a week. We script and edit them, you just hit record.</li>
+            <li><b>30 graphics a month,</b> made for the channel that's working.</li>
+            <li><b>A post every weekday,</b> written and scheduled for you on LinkedIn, Facebook or Instagram.</li>
+            <li><b>A 5-email nurture sequence,</b> written and set up, so trials turn into customers.</li>
+            <li><b>Re-audited every month,</b> with a growth report every 2 weeks.</li>
+            <li><b>A direct line to Triumph.</b> WhatsApp or email, reply within 24 hours.</li>
+          </ul>
+          <a href="mailto:hello@titanleap.co?subject=Launch%20Accelerator" class="btn btn-brand">Talk to us</a>
+        </div>
+        <div class="offer mp">
+          <div class="step-l"><b>For teams that already have customers</b></div>
+          <h3>Scaling System</h3>
+          <div class="price">$3,500 <small>/ month</small></div>
+          <p class="yr">or $2,800 a month, paid yearly</p>
+          <ul class="ticks">
+            <li><b>Everything in Launch,</b> plus:</li>
+            <li><b>30 short videos a month,</b> one a day, scripted and edited by us.</li>
+            <li><b>60 designs a month,</b> including ad creative.</li>
+            <li><b>8 blog posts a month,</b> written to bring in search traffic.</li>
+            <li><b>A weekly email</b> to your list.</li>
+            <li><b>Two funnel tests a month.</b> We build better versions of your pages and measure them against the old ones.</li>
+            <li><b>A competitor teardown every month,</b> so you see what rivals change.</li>
+            <li><b>Same-day replies</b> from Triumph.</li>
+          </ul>
+          <a href="mailto:hello@titanleap.co?subject=Scaling%20System" class="btn btn-plain">Talk to us</a>
+        </div>
       </div>
-      <div class="prow pop">
-        <div><h4>Scaling System<span class="tag">Most chosen</span></h4><div class="for">A steady flow of new customers</div></div>
-        <div class="inc">Everything in Launch, plus 20 short videos, 40 designs including ad creative, 4 blog posts, email campaigns</div>
-        <div class="m">$3,500</div><div class="y">$2,800</div>
-        <a href="mailto:hello@titanleap.co?subject=Scaling%20System" class="btn btn-brand">Talk to us</a>
-      </div>
-      <div class="prow">
-        <div><h4>Authority Domination</h4><div class="for">Customers come to you</div></div>
-        <div class="inc">Everything in Scaling, plus up to 60 videos and 100 designs, 8 blog posts, daily LinkedIn, founder brand</div>
-        <div class="m">$6,999</div><div class="y">$5,599</div>
-        <a href="mailto:hello@titanleap.co?subject=Authority%20Domination" class="btn btn-plain">Talk to us</a>
-      </div>
-      <p class="pnote">Every plan includes a live performance dashboard. If the metric we agree on hasn't moved after 90 days, we keep working for free until it does.</p>
+      <div class="gline mg"><b>Guarantee on both plans:</b> if the metric we agree on hasn't moved after 90 days, we keep working for free until it does.</div>
+      <p class="pnote">Need something bigger still? Ask, we'll scope it with you.</p>
     </div>
   </div>
 </section>
