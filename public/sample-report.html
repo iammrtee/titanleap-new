@@ -83,6 +83,11 @@ section{padding:112px 0 0}
 .logo{font-weight:900;font-stretch:118%;font-size:20px;letter-spacing:-.02em;text-decoration:none}
 .logo span{color:var(--brand)}
 footer .logo{color:#fff}footer .logo span{color:var(--gold)}
+.logo{display:inline-flex;align-items:center;line-height:0}
+.logo img{height:24px;width:auto;display:block}
+.logo .lg-l{display:none}
+:root[data-theme="dark"] .logo .lg-d{display:none}:root[data-theme="dark"] .logo .lg-l{display:block}
+footer .logo .lg-d{display:none}footer .logo .lg-l{display:block}footer .logo img{height:20px}
 .nav-links{display:flex;gap:26px;margin-left:auto;font-size:15px;color:var(--ink2)}
 .nav-links a{text-decoration:none}.nav-links a:hover{color:var(--ink)}
 .theme{width:40px;height:40px;border:1.5px solid var(--rule);border-radius:8px;background:var(--paper);color:var(--ink);cursor:pointer;display:grid;place-items:center}
@@ -466,7 +471,7 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
 <body>
 <nav class="nav" aria-label="Main">
   <div class="wrap">
-    <a href="/" class="logo">Titan<span>Leap</span></a>
+    <a href="/" class="logo" aria-label="TitanLeap home"><img class="lg-d" src="/logo.svg" alt="TitanLeap" width="138" height="24"><img class="lg-l" src="/logo-light.svg" alt="TitanLeap" width="138" height="24"></a>
     <div class="nav-links">
       <a href="#leaks">The leaks</a>
       <a href="#channels">New customers</a>
@@ -725,7 +730,7 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
 
 <footer>
   <div class="wrap">
-    <a href="/" class="logo">Titan<span>Leap</span></a>
+    <a href="/" class="logo" aria-label="TitanLeap home"><img class="lg-d" src="/logo.svg" alt="TitanLeap" width="138" height="24"><img class="lg-l" src="/logo-light.svg" alt="TitanLeap" width="138" height="24"></a>
     <a href="/policy/">Privacy</a>
     <a href="/terms/">Terms</a>
     <a href="mailto:hello@titanleap.co">hello@titanleap.co</a>
