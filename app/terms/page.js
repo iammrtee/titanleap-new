@@ -7,7 +7,7 @@ export default function TermsPage() {
   return (
     <div className="policy-page">
       <div className="policy-topbar">
-        <a href="/" className="policy-logo">Titan<em>Leap</em></a>
+        <a href="/" className="policy-logo" aria-label="TitanLeap home"><img src="/logo-light.svg" alt="TitanLeap" width="126" height="22" style={{height:22,width:"auto",display:"block"}} /></a>
         <a href="/" className="policy-back">← Back to site</a>
       </div>
 
