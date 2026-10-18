@@ -1770,7 +1770,9 @@ footer a{text-decoration:none}footer a:hover{color:#fff}
         a3:calc,
         a4:'Requested the free first look from the homepage.',
         leaks:ok?scan.leaks:undefined,
-        scanData:ok?scan:null
+        scanData:ok?scan:null,
+        source:'first-look',
+        calc:{visitors:+H.visitors.value||0,signup_rate:+H.signup_rate.value||0,paid_rate:+H.paid_rate.value||0,arpu:+H.arpu.value||0,est_leak:+String(H.est_leak.value).replace(/[^\d.]/g,'')||0}
       });
     }).then(done).catch(function(){
       btn.disabled=false;btn.textContent=btnLabel;
