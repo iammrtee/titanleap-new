@@ -80,9 +80,73 @@ function confirmHtml({ url }) {
   </div></body></html>`
 }
 
+
+// ── Lead card for free-first-look requests: everything about the lead in one place ──
+function money(n) { const v = Number(n); return isFinite(v) && v > 0 ? '$' + Math.round(v).toLocaleString('en-US') : '—' }
+function num(n) { const v = Number(n); return isFinite(v) && v > 0 ? Math.round(v).toLocaleString('en-US') : '—' }
+function pct(n) { const v = Number(n); return isFinite(v) && v > 0 ? v + '%' : '—' }
+function parseCalc(a3) {
+  // fallback for the older form, which sent the calculator as one sentence
+  const m = String(a3 || '').match(/([\d,]+) visitors\/mo, ([\d.]+)% sign up, ([\d.]+)% pay, \$([\d.,]+)\/customer\/mo\. Est\. \$([\d.,]+)\/mo/)
+  if (!m) return null
+  const n = (x) => Number(String(x).replace(/,/g, ''))
+  return { visitors: n(m[1]), signup_rate: n(m[2]), paid_rate: n(m[3]), arpu: n(m[4]), est_leak: n(m[5]) }
+}
+function row(label, value) {
+  return `<tr><td style="padding:8px 0;border-bottom:1px solid #EFE6FF;width:150px;font-size:13px;color:#65598A;vertical-align:top">${label}</td><td style="padding:8px 0;border-bottom:1px solid #EFE6FF;font-size:14px;color:#190D3E;font-weight:600">${value}</td></tr>`
+}
+function section(title, inner) {
+  return `<div style="margin:22px 0 0"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#6B21E8;margin:0 0 6px">${title}</div>${inner}</div>`
+}
+function firstLookLead({ email, url, revenue, calc, scan, leaks }) {
+  const site = url ? (url.startsWith('http') ? url : 'https://' + url) : ''
+  const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos', dateStyle: 'medium', timeStyle: 'short' }) + ' (Lagos)'
+  const signups = calc && calc.visitors && calc.signup_rate ? calc.visitors * calc.signup_rate / 100 : 0
+  const paying = signups && calc.paid_rate ? signups * calc.paid_rate / 100 : 0
+  const contact = `<table style="width:100%;border-collapse:collapse">${[
+    row('Email', `<a href="mailto:${esc(email)}" style="color:#6B21E8">${esc(email)}</a>`),
+    row('Website', site ? `<a href="${esc(site)}" style="color:#6B21E8">${esc(clean(url))}</a>` : '—'),
+    row('Monthly revenue', esc(revenue || '—')),
+    row('Company (from site)', esc(scan?.company || '—')),
+    row('Requested', esc(when)),
+  ].join('')}</table>`
+  const numbers = calc ? `<table style="width:100%;border-collapse:collapse">${[
+    row('Visitors a month', num(calc.visitors)),
+    row('Sign up', pct(calc.signup_rate) + (signups ? ` <span style="color:#65598A;font-weight:400">(~${num(signups)} signups)</span>` : '')),
+    row('Become paying', pct(calc.paid_rate) + (paying ? ` <span style="color:#65598A;font-weight:400">(~${num(paying)} customers)</span>` : '')),
+    row('Revenue per customer', money(calc.arpu) + ' /mo'),
+    row('Calculator says missing', `<span style="color:#B45309">${money(calc.est_leak)} /mo</span>`),
+  ].join('')}</table><p style="margin:6px 0 0;font-size:12px;color:#65598A">These are the slider values on the calculator when they sent the form. If they never touched it, they're our defaults.</p>` : '<p style="font-size:13px;color:#65598A;margin:0">No calculator numbers sent.</p>'
+  const scanBlock = scan ? `<table style="width:100%;border-collapse:collapse">${[
+    row('Headline', esc(scan.tagline || '—')),
+    row('Prices on page', scan.prices?.length ? esc(scan.prices.slice(0, 6).join(', ')) : '<span style="color:#DC2626">None visible</span>'),
+    row('Tracking', scan.pixels?.length ? esc(scan.pixels.join(', ')) : '<span style="color:#DC2626">None found</span>'),
+    row('Blog / content', scan.hasBlog ? 'Yes' : 'Not found'),
+    row('Socials', scan.liveSocials?.length ? esc(scan.liveSocials.join(', ')) : 'None found'),
+  ].join('')}</table>${leaks?.length ? `<div style="margin:12px 0 0;padding:12px 14px;background:#FEF2F2;border-radius:10px">${leaks.map((l) => `<div style="font-size:13px;color:#7F1D1D;margin:0 0 6px">• ${esc(l)}</div>`).join('')}</div>` : ''}` : '<p style="font-size:13px;color:#65598A;margin:0">We couldn\'t scan the site automatically. Open it yourself.</p>'
+  const html = `<!doctype html><html><body style="margin:0;background:#F7F3FF;padding:24px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif">
+  <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:14px;border:1px solid #E3D9F7;overflow:hidden">
+    <div style="background:#190D3E;padding:18px 24px;color:#fff"><div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#F5C518;font-weight:800">New free first look</div><div style="font-size:22px;font-weight:900;margin-top:4px">${esc(clean(url) || email)}</div><div style="font-size:13px;color:#CCB6F5;margin-top:2px">${esc(revenue || 'Revenue not given')} · reply within 24 hours</div></div>
+    <div style="padding:6px 24px 24px">
+      ${section('Who', contact)}
+      ${section('Their numbers', numbers)}
+      ${section('Site scan', scanBlock)}
+      ${section('Next step', `<p style="margin:0;font-size:14px;color:#190D3E;line-height:1.55">They've already had our "Got it" email promising a reply within 24 hours. Go through ${site ? `<a href="${esc(site)}" style="color:#6B21E8">${esc(clean(url))}</a>` : 'their site'} as a new customer, find the one step losing them the most, and hit <b>Reply</b> to send it straight to them.</p>`)}
+    </div>
+  </div></body></html>`
+  const text = [
+    `NEW FREE FIRST LOOK: ${clean(url) || email}`, '',
+    `Email: ${email}`, `Website: ${site || '-'}`, `Revenue: ${revenue || '-'}`, `Company: ${scan?.company || '-'}`, `Requested: ${when}`, '',
+    calc ? `Numbers: ${num(calc.visitors)} visitors/mo, ${pct(calc.signup_rate)} sign up, ${pct(calc.paid_rate)} pay, ${money(calc.arpu)}/customer. Calculator says ${money(calc.est_leak)}/mo missing.` : 'Numbers: none sent',
+    leaks?.length ? '\nScan found:\n' + leaks.map((l) => '- ' + l).join('\n') : '',
+    '\nReply to this email to answer them directly.',
+  ].join('\n')
+  return { html, text }
+}
+
 export async function POST(request) {
   try {
-    const { a1, a2, a3, a4, a5, name, email, url, goal, leaks, scanData } = await request.json()
+    const { a1, a2, a3, a4, a5, name, email, url, goal, leaks, scanData, calc: calcIn, source } = await request.json()
     const scores = scanData?.scores || null
     const fullData = scanData?.fullData || {}
 
@@ -187,11 +251,18 @@ export async function POST(request) {
 
     // 1. Notify TitanLeap. Sent from our own domain; falls back to Resend's shared
     //    sender if the domain isn't verified yet, so leads are never lost.
-    const subject = `New Audit Application — ${name}${a2 ? ` (${a2})` : ''}${scores ? ` · Score: ${scores.overall}/100` : ''}`
-    let internal = await sendEmail({ from: FROM, to: [INBOX], reply_to: email, subject, html })
+    const isFirstLook = source === 'first-look' || String(a1 || '').startsWith('FREE FIRST LOOK')
+    let subject = `New Audit Application — ${name}${a2 ? ` (${a2})` : ''}${scores ? ` · Score: ${scores.overall}/100` : ''}`
+    let body = { html }
+    if (isFirstLook) {
+      const lead = firstLookLead({ email, url, revenue: a2, calc: calcIn || parseCalc(a3), scan: scanData, leaks })
+      subject = `New free first look · ${clean(url) || email}${a2 ? ` · ${a2}` : ''}`
+      body = { html: lead.html, text: lead.text }
+    }
+    let internal = await sendEmail({ from: FROM, to: [INBOX], reply_to: email, subject, ...body })
     if (!internal.ok) {
       console.error('Resend (internal, own domain) error:', internal.error)
-      internal = await sendEmail({ from: 'TitanLeap Audits <onboarding@resend.dev>', to: [INBOX], reply_to: email, subject, html })
+      internal = await sendEmail({ from: 'TitanLeap Audits <onboarding@resend.dev>', to: [INBOX], reply_to: email, subject, ...body })
     }
     if (!internal.ok) {
       console.error('Resend (internal) error:', internal.error)
