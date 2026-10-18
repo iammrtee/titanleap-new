@@ -22,6 +22,63 @@ function scoreBar(score) {
   return `<span style="color:${color};font-weight:700">${'█'.repeat(filled)}${'░'.repeat(10-filled)} ${score}%</span>`
 }
 
+const FROM = 'TitanLeap <hello@titanleap.co>'
+const INBOX = 'hello@titanleap.co'
+
+async function sendEmail(payload) {
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    if (r.ok) return { ok: true }
+    return { ok: false, error: `${r.status} ${await r.text()}` }
+  } catch (e) {
+    return { ok: false, error: String(e) }
+  }
+}
+
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const clean = (u) => String(u || '').replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0, 80)
+
+function confirmText({ url }) {
+  const site = url ? clean(url) : 'your site'
+  return `Got it. Your free first look at ${site} is in the queue.
+
+What happens next:
+1. Triumph goes through ${site} the way a new customer would: home page, signup and pricing.
+2. Within 24 hours you get a short email with the one step where you're losing the most customers, and what to change.
+3. If it's worth going deeper, we'll tell you how the full $297 audit works. No pressure either way.
+
+Anything we should know first? Just reply to this email.
+
+Triumph
+TitanLeap · titanleap.co`
+}
+
+function confirmHtml({ url }) {
+  const site = url ? esc(clean(url)) : 'your site'
+  return `<!doctype html><html><body style="margin:0;background:#F7F3FF;padding:32px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#190D3E">
+  <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #E3D9F7">
+    <div style="background:#190D3E;padding:22px 28px">
+      <span style="color:#ffffff;font-weight:900;font-size:18px;letter-spacing:.5px">TITAN<span style="color:#F5C518">LEAP</span></span>
+    </div>
+    <div style="padding:30px 28px 8px">
+      <h1 style="margin:0 0 12px;font-size:24px;line-height:1.2;color:#190D3E">Got it. Your free first look at ${site} is in the queue.</h1>
+      <p style="margin:0 0 22px;font-size:16px;line-height:1.6;color:#46396B">Here's what happens next.</p>
+      <table role="presentation" style="width:100%;border-collapse:collapse;font-size:15px;line-height:1.55;color:#190D3E">
+        <tr><td style="width:34px;vertical-align:top;padding:0 0 14px"><span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#6B21E8;color:#fff;text-align:center;font-weight:700;font-size:13px;line-height:24px">1</span></td><td style="padding:0 0 14px">Triumph goes through ${site} the way a new customer would: home page, signup and pricing.</td></tr>
+        <tr><td style="width:34px;vertical-align:top;padding:0 0 14px"><span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#6B21E8;color:#fff;text-align:center;font-weight:700;font-size:13px;line-height:24px">2</span></td><td style="padding:0 0 14px">Within <b>24 hours</b> you get a short email with the one step where you're losing the most customers, and what to change.</td></tr>
+        <tr><td style="width:34px;vertical-align:top;padding:0 0 14px"><span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#6B21E8;color:#fff;text-align:center;font-weight:700;font-size:13px;line-height:24px">3</span></td><td style="padding:0 0 14px">If it's worth going deeper, we'll tell you how the full $297 audit works. No pressure either way.</td></tr>
+      </table>
+      <p style="margin:8px 0 0;padding:14px 16px;background:#FFF8DB;border-radius:10px;font-size:14px;line-height:1.5;color:#3A2A00">Anything we should know first, like a page you're unsure about? Just reply to this email.</p>
+      <p style="margin:24px 0 26px;font-size:15px;color:#190D3E">Triumph<br><span style="color:#65598A">TitanLeap</span></p>
+    </div>
+    <div style="padding:16px 28px;border-top:1px solid #EFE6FF;font-size:12px;color:#65598A">You're getting this because you asked for a free first look at <a href="https://titanleap.co" style="color:#6B21E8">titanleap.co</a>. One email with your result, no list.</div>
+  </div></body></html>`
+}
+
 export async function POST(request) {
   try {
     const { a1, a2, a3, a4, a5, name, email, url, goal, leaks, scanData } = await request.json()
@@ -127,25 +184,34 @@ export async function POST(request) {
       </div>
     `
 
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'TitanLeap Audits <onboarding@resend.dev>',
-        to: ['hello@titanleap.co'],
-        reply_to: email,
-        subject: `New Audit Application — ${name}${a2 ? ` (${a2})` : ''}${scores ? ` · Score: ${scores.overall}/100` : ''}`,
-        html,
-      }),
-    })
-
-    if (!res.ok) {
-      const err = await res.text()
-      console.error('Resend error:', err)
+    // 1. Notify TitanLeap. Sent from our own domain; falls back to Resend's shared
+    //    sender if the domain isn't verified yet, so leads are never lost.
+    const subject = `New Audit Application — ${name}${a2 ? ` (${a2})` : ''}${scores ? ` · Score: ${scores.overall}/100` : ''}`
+    let internal = await sendEmail({ from: FROM, to: [INBOX], reply_to: email, subject, html })
+    if (!internal.ok) {
+      console.error('Resend (internal, own domain) error:', internal.error)
+      internal = await sendEmail({ from: 'TitanLeap Audits <onboarding@resend.dev>', to: [INBOX], reply_to: email, subject, html })
+    }
+    if (!internal.ok) {
+      console.error('Resend (internal) error:', internal.error)
       return Response.json({ error: 'Failed to send email' }, { status: 500 })
     }
 
-    return Response.json({ ok: true })
+    // 2. Confirm to the person who applied. Needs titanleap.co verified in Resend.
+    let confirm = { ok: false, error: 'no email' }
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email || '')) {
+      confirm = await sendEmail({
+        from: FROM,
+        to: [email],
+        reply_to: INBOX,
+        subject: url ? `Got it — your free first look at ${clean(url)} is on its way` : 'Got it — your free first look is on its way',
+        html: confirmHtml({ url }),
+        text: confirmText({ url }),
+      })
+      if (!confirm.ok) console.error('Resend (confirmation) error:', confirm.error)
+    }
+
+    return Response.json({ ok: true, confirmation: confirm.ok ? 'sent' : 'failed' })
   } catch (e) {
     console.error('Audit route error:', e)
     return Response.json({ error: 'Server error' }, { status: 500 })
