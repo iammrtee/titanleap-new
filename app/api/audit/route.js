@@ -23,7 +23,8 @@ function scoreBar(score) {
 }
 
 const FROM = 'TitanLeap <hello@titanleap.co>'
-const INBOX = 'hello@titanleap.co'
+// Leads go to Triumph's private inbox for now (titanleap.co mail isn't receiving yet).
+const INBOX = 'tazrt37@gmail.com'
 
 async function sendEmail(payload) {
   try {
